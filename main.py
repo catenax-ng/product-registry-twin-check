@@ -60,7 +60,7 @@ if __name__ == '__main__':
     
     # Application Setup
     _logging.info('Application Setup:')
-    TWINS_PICKL_PATH = os.path.join(globalParamters.ROOT_DIR, globalParamters.CONF['twins_pickl_filename'])
+    TWINS_PICKL_PATH = os.path.join(globalParamters.ROOT_DIR, globalParamters.CONF['twins_pickle_pre_name'])
     
     if globalParamters.CONF['force_reload']:
         globalParamters.set_force_reload(True)

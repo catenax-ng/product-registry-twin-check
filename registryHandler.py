@@ -22,8 +22,6 @@ class registryHandler:
     def __init__(self, kcH) -> None:
         self._logging = logging.getLogger(__name__)
         self.kcH = kcH
-        self.twins_pickle_path = os.path.join(globalParamters.ROOT_DIR,
-                                              globalParamters.CONF['twins_pickl_filename'])
 
     def getTwin(self,aasId):
         """Retrieves a twin for a specific aasId
@@ -69,15 +67,17 @@ class registryHandler:
         self._logging.info(f'Getting all Twins for BPN: {bpn}')
         twins = []
         load_twin_list = False
+        file_name = f"{globalParamters.CONF['twins_pickle_pre_name']}_{bpn['value']}.pickle"
+        pickle_path = os.path.join(globalParamters.ROOT_DIR,file_name)
         
-        if os.path.isfile(self.twins_pickle_path):
-            twins = fH.load_pickle(self.twins_pickle_path, 'rb')
+        if os.path.isfile(pickle_path):
+            twins = fH.load_pickle(pickle_path, 'rb')
             # len([twin for twin in twins if twin['bpn'] == bpn['value'] ])
-            if len([twin for twin in twins if twin['bpn'] == bpn['value'] ]) == 0:
-                self._logging.info('No values found for %s', bpn['value'] )
-                load_twin_list = True
-            else: 
-                return [twin for twin in twins if twin['bpn'] == bpn['value'] ]
+            # if len([twin for twin in twins if twin['bpn'] == bpn['value'] ]) == 0:
+            #     self._logging.info('No values found for %s', bpn['value'] )
+            #     load_twin_list = True
+            # else: 
+            #     return [twin for twin in twins if twin['bpn'] == bpn['value'] ]
         else:
             load_twin_list = True
                     
@@ -102,7 +102,7 @@ class registryHandler:
                 self._logging.debug(f'Request status: {req}')
                 
                 twins = list(map( lambda x : { 'urn':x, 'status':globalParamters.Status.NEW.name,'shell':{}, 'checkresult':[], 'bpn':bpn['value']},req.json()))
-                fH.write_pickle(self.twins_pickle_path,twins)
+                fH.write_pickle(pickle_path,twins)
                 
             except exceptions.RequestException as e:
                 self._logging.error(e)
@@ -118,12 +118,12 @@ class registryHandler:
                     # twins[i]['bpn'] = bpn['value']
                     sleep(uniform(0,0.2))
 
-                if i % 100 == 0:
-                    fH.write_pickle(self.twins_pickle_path,twins)
+                if i % 50 == 0:
+                    fH.write_pickle(pickle_path,twins)
         else: 
             self._logging.warn('for %s %s no Twins exists in the Digital Twin Registry',bpn['company'], bpn['value'])
 
-        fH.write_pickle(self.twins_pickle_path,twins)
+        fH.write_pickle(pickle_path,twins)
         self._logging.info('')
         [twin.pop('bpn', None) for twin in twins]
         return twins    

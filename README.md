@@ -11,5 +11,5 @@ Currently the script checks the following:
 
 ## Getting Started
 
-Add a valid client_id and client_secret to the configuration file and remove the "copy" from the filename so that its name is **settings.yaml**.
+Add a valid *client_id* and *client_secret* to the configuration file and remove the "copy" from the filename so that its name is **settings.yaml**.
 Select or add a BPN to the list of BPN's and start the programm with **python main.py**
