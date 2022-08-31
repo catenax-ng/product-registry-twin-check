@@ -60,11 +60,9 @@ if __name__ == '__main__':
     
     # Application Setup
     _logging.info('Application Setup:')
-    TWINS_PICKL_PATH = os.path.join(globalParamters.ROOT_DIR, globalParamters.CONF['twins_pickle_pre_name'])
     
     if globalParamters.CONF['force_reload']:
         globalParamters.set_force_reload(True)
-        fH.remove_file(TWINS_PICKL_PATH)
     _logging.info(f'   forced_reload\t\t{globalParamters.FORCE_RELOAD}')
     
     if 'proxies' in globalParamters.CONF:
@@ -83,6 +81,12 @@ if __name__ == '__main__':
     rH = registryHandler.registryHandler(kcH)
     
     for bpn in conf['bpn']:
+        
+        if globalParamters.FORCE_RELOAD == False:
+            file_name = f"{globalParamters.CONF['twins_pickle_pre_name']}_{bpn['value']}.pickle"
+            pickle_path = os.path.join(globalParamters.ROOT_DIR,file_name)
+            fH.remove_file(pickle_path)
+        
         shells = rH.getTwinsByBPN(bpn)
         tC = TwinCheck()
         shells = tC.check_twins(shells)
