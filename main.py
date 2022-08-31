@@ -19,7 +19,7 @@ import datetime
 # Maybe: Write tests for checks(hard, dont know how yet)
 # Maybe: get VANs
 # TODO: Add more information to resultset to identify an object
-# TODO: Refactor getTwinsByBPN force reload strategy
+# TODO: Refactor getTwinsByBPN force reload strategy (a pickl per bpn => abstraction a lot easier)
 
 
 def writeTwinsAsCsv(twins, bpn):
@@ -81,12 +81,8 @@ if __name__ == '__main__':
     # Application start
     kcH = keycloackHandler()
     rH = registryHandler.registryHandler(kcH)
-    # Test twin
-    # twin = rH.getTwin({'urn':'urn:uuid:1c7dfb85-53de-42cf-bc07-fe702916ffb8'})
-    # _logging.info(twin)
     
     for bpn in conf['bpn']:
-        # _logging.info('BPN: %s' % bpn['value'])
         shells = rH.getTwinsByBPN(bpn)
         tC = TwinCheck()
         shells = tC.check_twins(shells)

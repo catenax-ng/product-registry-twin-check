@@ -7,8 +7,15 @@ registry_url: 'https://semantics.int.demo.catena-x.net'
 twins_pickl_filename: 'twins.pickle'
 token_pickle: 'token.pickle'
 bpn: 
- - {'company':'ZF','value':'BPNL00000003B2OM'}
-#  - {'company':'ZF','value':'BPNL00000003B3NX'}
-#  - {'company':'BASF','value':'BPNL00000003B0Q0'}
+#  - {'company':'ZF', 'name': 'Tier A','value':'BPNL00000003B2OM'}
+#  - {'company':'ZF', 'name': 'Sub Tier A','value':'BPNL00000003B3NX'}
+ - {'company':'BMW', 'name': 'OEM A','value':'BPNL00000003AYRE'}
+#  - {'company':'Benz', 'name': 'OEM B','value':'BPNL00000003AVTH'}
+#  - {'company':'SAP', 'name': 'OEM C','value':'BPNL00000003AZQP'}
+#  - {'company':'BOSCH', 'name': 'Tier B','value':'BPNL00000003B5MJ'}
+#  - {'company':'BASF', 'name': 'N-Tier A','value':'BPNL00000003B0Q0'}
+#  - {'company':'HENKEL', 'name': 'Sub Tier B','value':'BPNL00000003AXS3'}
+#  - {'company':'GEC', 'name': 'Tier C','value':'BPNL00000003CSGV'}
+#  - {'company':'Siemens', 'name': 'Sub Tier C','value':'BPNL00000000BJTL'}
 force_reload: True
 check_output_filename: 'DTRCheck'
