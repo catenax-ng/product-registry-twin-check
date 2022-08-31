@@ -1,4 +1,4 @@
-.csv
-.pickle
+*.csv
+*.pickle
 arc/
 settings.yaml
