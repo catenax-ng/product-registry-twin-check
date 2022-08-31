@@ -1,0 +1,14 @@
+version: 1
+client_id: ''
+client_secret: ''
+keycloack_host: 'https://centralidp.demo.catena-x.net'
+keycloack_realm: '/auth/realms/CX-Central/protocol/openid-connect/token'
+registry_url: 'https://semantics.int.demo.catena-x.net'
+twins_pickl_filename: 'twins.pickle'
+token_pickle: 'token.pickle'
+bpn: 
+ - {'company':'ZF','value':'BPNL00000003B2OM'}
+#  - {'company':'ZF','value':'BPNL00000003B3NX'}
+#  - {'company':'BASF','value':'BPNL00000003B0Q0'}
+force_reload: True
+check_output_filename: 'DTRCheck'

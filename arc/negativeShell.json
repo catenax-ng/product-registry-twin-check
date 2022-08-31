@@ -1,0 +1,214 @@
+{
+    "invalidShell": [
+        {
+            "description": [],
+            "globalAssetId": {
+                "value": [
+                    "urn:uuid:12cce867-957c-4ce5-9d0a-1f68ae87a03a"
+                ]
+            },
+            "idShort": "ZB ZELLE_BPNL00000003AYRE_NO-703241694499541340690583",
+            "identification": "urn:uuid:12cce867-957c-4ce5-9d0a-1f68ae87a03",
+            "specificAssetIds": [
+                {
+                    "key": "ManufacturerPartId",
+                    "value": "8840838-04"
+                },
+                {
+                    "key": "PartInstanceId",
+                    "value": "NO-703241694499541340690583"
+                }
+            ],
+            "submodelDescriptors": [
+                {
+                    "description": [],
+                    "idShort": "batteryProductDescription",
+                    "identification": "urn:uuid:6a1c7cb5-c5f1-4338-b196-643c72c590ca",
+                    "semanticId": {
+                        "value": [
+                            "urn:bamm:io.catenax.battery.product_description:1.0.1#ProductDescription"
+                        ]
+                    },
+                    "endpoints": [
+                        {
+                            "interface": "EDC",
+                            "protocolInformation": {
+                                "endpointAddress": "http://connector.cx-rel.edc.aws.bmw.cloud:8282/BPNL00000003AYRE/urn:uuid:1c7dfb85-53de-42cf-bc07-fe702916ffb8-urn:uuid:6a1c7cb5-c5f1-4338-b196-643c72c590ca/submodel?content=value&extent=WithBLOBValue",
+                                "endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
+                                "endpointProtocolVersion": "0.0.1-SNAPSHOT"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "description": [],
+                    "idShort": "assemblyPartRelationship",
+                    "identification": "urn:uuid:677692b9-9271-4b39-8dc0-d7ac2cb53b30",
+                    "semanticId": {
+                        "value": [
+                            "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship"
+                        ]
+                    },
+                    "endpoints": [
+                        {
+                            "interface": "EDC",
+                            "protocolInformation": {
+                                "endpointAddress": "http://connector.cx-rel.edc.aws.bmw.cloud:8282/BPNL00000003AYRE/urn:uuid:1c7dfb85-53de-42cf-bc07-fe702916ffb8-urn:uuid:677692b9-9271-4b39-8dc0-d7ac2cb53b30/submodel?content=value&extent=WithBLOBValue",
+                                "endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
+                                "endpointProtocolVersion": "0.0.1-SNAPSHOT"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "description": [],
+                    "idShort": "physicalDimension",
+                    "identification": "urn:uuid:d91665d0-ee31-40dc-a9cd-d085a8329ca2",
+                    "semanticId": {
+                        "value": [
+                            "urn:bamm:io.catenax.physical_dimension:1.0.0#PhysicalDimension"
+                        ]
+                    },
+                    "endpoints": [
+                        {
+                            "interface": "EDC",
+                            "protocolInformation": {
+                                "endpointAddress": "http://connector.cx-rel.edc.aws.bmw.cloud:8282/BPNL00000003AYRE/urn:uuid:1c7dfb85-53de-42cf-bc07-fe702916ffb8-urn:uuid:d91665d0-ee31-40dc-a9cd-d085a8329ca2/submodel?content=value&extent=WithBLOBValue",
+                                "endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
+                                "endpointProtocolVersion": "0.0.1-SNAPSHOT"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "description": [],
+                    "idShort": "serialPartTypization",
+                    "identification": "urn:uuid:3790f3bd-d292-4d72-a95c-3afaa941de4e",
+                    "semanticId": {
+                        "value": [
+                            "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
+                        ]
+                    },
+                    "endpoints": [
+                        {
+                            "interface": "EDC",
+                            "protocolInformation": {
+                                "endpointAddress": "http://connector.cx-rel.edc.aws.bmw.cloud:8282/BPNL00000003AYRE/urn:uuid:1c7dfb85-53de-42cf-bc07-fe702916ffb8-urn:uuid:3790f3bd-d292-4d72-a95c-3afaa941de4e/submodel?content=value&extent=WithBLOBValue",
+                                "endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
+                                "endpointProtocolVersion": "0.0.1-SNAPSHOT"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "happyPath":[
+        {
+            "description": [],
+            "globalAssetId": {
+                "value": [
+                    "urn:uuid:12cce867-957c-4ce5-9d0a-1f68ae87a03a"
+                ]
+            },
+            "idShort": "ZB ZELLE_BPNL00000003AYRE_NO-703241694499541340690583",
+            "identification": "urn:uuid:1c7dfb85-53de-42cf-bc07-fe702916ffb8",
+            "specificAssetIds": [
+                {
+                    "key": "ManufacturerId",
+                    "value": "BPNL00000003AYRE"
+                },
+                {
+                    "key": "ManufacturerPartId",
+                    "value": "8840838-04"
+                },
+                {
+                    "key": "PartInstanceId",
+                    "value": "NO-703241694499541340690583"
+                }
+            ],
+            "submodelDescriptors": [
+                {
+                    "description": [],
+                    "idShort": "batteryProductDescription",
+                    "identification": "urn:uuid:6a1c7cb5-c5f1-4338-b196-643c72c590ca",
+                    "semanticId": {
+                        "value": [
+                            "urn:bamm:io.catenax.battery.product_description:1.0.1#ProductDescription"
+                        ]
+                    },
+                    "endpoints": [
+                        {
+                            "interface": "EDC",
+                            "protocolInformation": {
+                                "endpointAddress": "http://connector.cx-rel.edc.aws.bmw.cloud:8282/BPNL00000003AYRE/urn:uuid:1c7dfb85-53de-42cf-bc07-fe702916ffb8-urn:uuid:6a1c7cb5-c5f1-4338-b196-643c72c590ca/submodel?content=value&extent=WithBLOBValue",
+                                "endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
+                                "endpointProtocolVersion": "0.0.1-SNAPSHOT"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "description": [],
+                    "idShort": "assemblyPartRelationship",
+                    "identification": "urn:uuid:677692b9-9271-4b39-8dc0-d7ac2cb53b30",
+                    "semanticId": {
+                        "value": [
+                            "urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship"
+                        ]
+                    },
+                    "endpoints": [
+                        {
+                            "interface": "EDC",
+                            "protocolInformation": {
+                                "endpointAddress": "http://connector.cx-rel.edc.aws.bmw.cloud:8282/BPNL00000003AYRE/urn:uuid:1c7dfb85-53de-42cf-bc07-fe702916ffb8-urn:uuid:677692b9-9271-4b39-8dc0-d7ac2cb53b30/submodel?content=value&extent=WithBLOBValue",
+                                "endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
+                                "endpointProtocolVersion": "0.0.1-SNAPSHOT"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "description": [],
+                    "idShort": "physicalDimension",
+                    "identification": "urn:uuid:d91665d0-ee31-40dc-a9cd-d085a8329ca2",
+                    "semanticId": {
+                        "value": [
+                            "urn:bamm:io.catenax.physical_dimension:1.0.0#PhysicalDimension"
+                        ]
+                    },
+                    "endpoints": [
+                        {
+                            "interface": "EDC",
+                            "protocolInformation": {
+                                "endpointAddress": "http://connector.cx-rel.edc.aws.bmw.cloud:8282/BPNL00000003AYRE/urn:uuid:1c7dfb85-53de-42cf-bc07-fe702916ffb8-urn:uuid:d91665d0-ee31-40dc-a9cd-d085a8329ca2/submodel?content=value&extent=WithBLOBValue",
+                                "endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
+                                "endpointProtocolVersion": "0.0.1-SNAPSHOT"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "description": [],
+                    "idShort": "serialPartTypization",
+                    "identification": "urn:uuid:3790f3bd-d292-4d72-a95c-3afaa941de4e",
+                    "semanticId": {
+                        "value": [
+                            "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
+                        ]
+                    },
+                    "endpoints": [
+                        {
+                            "interface": "EDC",
+                            "protocolInformation": {
+                                "endpointAddress": "http://connector.cx-rel.edc.aws.bmw.cloud:8282/BPNL00000003AYRE/urn:uuid:1c7dfb85-53de-42cf-bc07-fe702916ffb8-urn:uuid:3790f3bd-d292-4d72-a95c-3afaa941de4e/submodel?content=value&extent=WithBLOBValue",
+                                "endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
+                                "endpointProtocolVersion": "0.0.1-SNAPSHOT"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
