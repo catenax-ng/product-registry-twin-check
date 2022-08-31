@@ -16,10 +16,10 @@ import datetime
 # ✅ draw Statusbar
 # ✅ Proxy settings variable
 # ✅ Documentation
-# Maybe: Write tests for checks(hard, dont know how yet)
+# ✅ Refactor getTwinsByBPN force reload strategy (a pickl per bpn => abstraction a lot easier)
+# Maybe: Write tests for checks(dont know how yet)
 # Maybe: get VANs
 # TODO: Add more information to resultset to identify an object
-# TODO: Refactor getTwinsByBPN force reload strategy (a pickl per bpn => abstraction a lot easier)
 
 
 def writeTwinsAsCsv(twins, bpn):
