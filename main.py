@@ -16,10 +16,10 @@ import datetime
 # ✅ draw Statusbar
 # ✅ Proxy settings variable
 # ✅ Documentation
-# Maybe: ?? Add file arg. for input
 # Maybe: Write tests for checks(hard, dont know how yet)
-# TODO: get VANs
-# TODO: Add more information to resultset to identify object
+# Maybe: get VANs
+# TODO: Add more information to resultset to identify an object
+# TODO: Refactor getTwinsByBPN force reload strategy
 
 
 def writeTwinsAsCsv(twins, bpn):
