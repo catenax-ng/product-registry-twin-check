@@ -82,7 +82,7 @@ if __name__ == '__main__':
     
     for bpn in conf['bpn']:
         
-        if globalParamters.FORCE_RELOAD == False:
+        if globalParamters.FORCE_RELOAD == True:
             file_name = f"{globalParamters.CONF['twins_pickle_pre_name']}_{bpn['value']}.pickle"
             pickle_path = os.path.join(globalParamters.ROOT_DIR,file_name)
             fH.remove_file(pickle_path)

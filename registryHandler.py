@@ -1,5 +1,4 @@
 
-from genericpath import exists
 from urllib.parse import urljoin
 import fileHandler as fH
 from requests import get, exceptions
@@ -69,7 +68,7 @@ class registryHandler:
         load_twin_list = False
         file_name = f"{globalParamters.CONF['twins_pickle_pre_name']}_{bpn['value']}.pickle"
         pickle_path = os.path.join(globalParamters.ROOT_DIR,file_name)
-        
+
         if os.path.isfile(pickle_path):
             twins = fH.load_pickle(pickle_path, 'rb')
             # len([twin for twin in twins if twin['bpn'] == bpn['value'] ])
@@ -81,7 +80,7 @@ class registryHandler:
         else:
             load_twin_list = True
                     
-            
+        self._logging.info(f"load_twin_list: {load_twin_list}, pikle path: {pickle_path}")
         
         if load_twin_list: 
             try:
@@ -108,11 +107,14 @@ class registryHandler:
                 self._logging.error(e)
                 raise SystemExit()
 
+        
+        
         self._logging.info('.' *60)
         self._logging.info('Feching the twins')
         if len(twins) >= 1:
             for i in tqdm(range(len(twins))):
-                if twins[i]['shell'] == {} or twins[i]['status'] == globalParamters.Status.NEW.name:
+                if twins[i]['status'] == globalParamters.Status.NEW.name:
+                    self._logging.debug(f"get Twin from Registry: {twins[i]}")
                     twins[i]['shell']= self.getTwin(twins[i])
                     twins[i]['status'] = globalParamters.Status.TWINLOADED.name
                     # twins[i]['bpn'] = bpn['value']
