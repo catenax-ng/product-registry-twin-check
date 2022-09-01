@@ -1,13 +1,45 @@
+#!/usr/bin/env python
+
+"""A programm to check if a Digital Twin in the Registry is conform to Catena-X specifications.
+"""
+
 import os.path
 import logging
 import logging.config
+import datetime
+import pandas as pd
+import globalParamters
+import registryHandler
+from twinCheck import TwinCheck
 import fileHandler as fH
 from keycloackHandlerMemory import keycloackHandler
-import registryHandler
-import globalParamters
-import pandas as pd
-from twinCheck import TwinCheck
-import datetime
+
+__author__ = "Johannes Zahn"
+__copyright__ = """
+ Copyright (c) 2022 
+       2022: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ Copyright (c) 2022 Contributors to the Eclipse Foundation
+
+ See the NOTICE file(s) distributed with this work for additional
+ information regarding copyright ownership.
+
+ This program and the accompanying materials are made available under the
+ terms of the Apache License, Version 2.0 which is available at
+ https://www.apache.org/licenses/LICENSE-2.0. *
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ License for the specific language governing permissions and limitations
+ under the License.
+
+ SPDX-License-Identifier: Apache-2.0
+"""
+__license__ = "Apache-2.0"
+__version__ = "0.0.1"
+__maintainer__ = ""
+__email__ = ""
+__status__ = "exploration"
+
 
 # ✅ CRITICAL SOLVE GLOBALS ISSUE ==> initialize only once if inctance exists?
 # ✅ Add functionality to force reload
@@ -20,9 +52,10 @@ import datetime
 # Maybe: Write tests for checks(dont know how yet)
 # Maybe: get VANs
 # TODO: Add more information to resultset to identify an object
+# TODO: Wrapping config in a class
 
 
-def writeTwinsAsCsv(twins, bpn):
+def write_twin_as_csv(twins, bpn_o):
     """this function writes the result in a human readable result to disk
 
     :param twins: list of twins
@@ -32,14 +65,18 @@ def writeTwinsAsCsv(twins, bpn):
     """
     for i in twins:
         del i['shell']
-    df = pd.DataFrame.from_dict(twins) 
-    df.to_csv(f"{conf['check_output_filename']}_{bpn['company']}_{bpn['value']}_{datetime.datetime.now().strftime('%y%m%d')}.csv", index = False, header=True)
+    df_twins = pd.DataFrame.from_dict(twins)
+    df_twins.to_csv(f"{conf['check_output_filename']}_{bpn_o['company']}_\
+                    {bpn_o['value']}_{datetime.datetime.now().strftime('%y%m%d')}.csv",
+                    index=False,
+                    header=True)
 
 
 if __name__ == '__main__':
-     
+
     # setup logging
-    _logging_conf = fH.read_yaml(os.path.join(globalParamters.ROOT_DIR, 'logging.yaml'))
+    _logging_conf = fH.read_yaml(os.path.join(
+        globalParamters.ROOT_DIR, 'logging.yaml'))
     logging.config.dictConfig(_logging_conf)
     _logging = logging.getLogger(__name__)
 
@@ -49,45 +86,50 @@ if __name__ == '__main__':
     _logging.info('#'*60)
 
     #Load application configuration
-    conf = fH.read_yaml(os.path.join(globalParamters.ROOT_DIR, 'settings.yaml'))
+    conf = fH.read_yaml(os.path.join(
+        globalParamters.ROOT_DIR, 'settings.yaml'))
     globalParamters.set_conf(conf)
-    _logging.info('-' * 60 )
-    _logging.info(f'Configuration:')
-    
+    _logging.info('-' * 60)
+    _logging.info('Configuration:')
+
     for key, value in globalParamters.CONF.items():
-        _logging.info(f'   {key:23} {value}')
-    _logging.info('-' * 60 )
-    
+        # _logging.info(f'   {key:23} {value}')
+        _logging.info('  %23s %s', key, value)
+
+    _logging.info('-' * 60)
+
     # Application Setup
     _logging.info('Application Setup:')
-    
+
     if globalParamters.CONF['force_reload']:
         globalParamters.set_force_reload(True)
-    _logging.info(f'   forced_reload\t\t{globalParamters.FORCE_RELOAD}')
-    
+    # _logging.info(f'   forced_reload\t\t{globalParamters.FORCE_RELOAD}')
+    _logging.info('   forced_reload\t\t%s',globalParamters.FORCE_RELOAD)
+
     if 'proxies' in globalParamters.CONF:
         if globalParamters.CONF['proxies'] != {}:
             globalParamters.set_use_proxy(True)
-        _logging.info(f'   use_proxy\t\t\t{globalParamters.USE_PROXY}')
+        # _logging.info(f'   use_proxy\t\t\t{globalParamters.USE_PROXY}')
+        _logging.info('   use_proxy\t\t\t%s',globalParamters.USE_PROXY)
 
-    if len(globalParamters.CONF['bpn']) > 1: 
+    if len(globalParamters.CONF['bpn']) > 1:
         globalParamters.set_multiple_bpns(True)
-    _logging.info(f'   multiple_bpns\t\t{globalParamters.MULTIPLE_BPNS}')
-    _logging.info('-' * 60 )
-
+    # _logging.info(f'   multiple_bpns\t\t{globalParamters.MULTIPLE_BPNS}')
+    _logging.info('   multiple_bpns\t\t%s',globalParamters.MULTIPLE_BPNS)
+    _logging.info('-' * 60)
 
     # Application start
     kcH = keycloackHandler()
     rH = registryHandler.registryHandler(kcH)
-    
+
     for bpn in conf['bpn']:
-        
-        if globalParamters.FORCE_RELOAD == True:
+
+        if globalParamters.FORCE_RELOAD is True:
             file_name = f"{globalParamters.CONF['twins_pickle_pre_name']}_{bpn['value']}.pickle"
-            pickle_path = os.path.join(globalParamters.ROOT_DIR,file_name)
+            pickle_path = os.path.join(globalParamters.ROOT_DIR, file_name)
             fH.remove_file(pickle_path)
-        
+
         shells = rH.getTwinsByBPN(bpn)
         tC = TwinCheck()
         shells = tC.check_twins(shells)
-        writeTwinsAsCsv(shells, bpn)
+        write_twin_as_csv(shells, bpn)
