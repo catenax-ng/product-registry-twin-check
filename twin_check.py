@@ -5,7 +5,7 @@ import logging
 from enum import Enum
 import re
 from tqdm import tqdm
-import globalParamters
+import global_parameters as GlobalParamters
 
 __author__ = "Johannes Zahn"
 __copyright__ = """
@@ -60,7 +60,7 @@ class TwinCheck:
         self._logger.info('Start Twin Checkup')
 
         for i in tqdm(range(len(twins))):
-            if twins[i]['status'] == globalParamters.Status.TWINLOADED.name:
+            if twins[i]['status'] == GlobalParamters.Status.TWINLOADED.name:
                 twins[i]['checkresult'].append(self.check1(twins[i]))
                 twins[i]['checkresult'].append(self.check2(twins[i]))
                 twins[i]['checkresult'].append(self.check3(twins[i]))
@@ -73,7 +73,7 @@ class TwinCheck:
                     twins[i]['check'] = Check.PASSED.name
 
                 # set Status
-                twins[i]['status'] = globalParamters.Status.TESTED.name
+                twins[i]['status'] = GlobalParamters.Status.TESTED.name
         self._logger.info(' ')
         return twins
 

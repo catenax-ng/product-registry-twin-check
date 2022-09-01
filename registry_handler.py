@@ -8,8 +8,8 @@ from random import uniform
 from urllib.parse import urljoin
 from requests import get, exceptions
 from tqdm import tqdm
-import fileHandler as fH
-import globalParamters
+import file_handler as fH
+import global_parameters as GlobalParamters
 
 __author__ = "Johannes Zahn"
 __copyright__ = """
@@ -62,16 +62,16 @@ class RegistryHandler:
         """
         try:
             get_shell = f"registry/registry/shell-descriptors/{aas_id['urn']}"
-            url = urljoin(globalParamters.CONF['registry_url'], get_shell)
+            url = urljoin(GlobalParamters.CONF['registry_url'], get_shell)
             # self._logging.debug(f'url: {url}')
             self._logging.debug('url: %s', url)
             headers = {
                 'Authorization': f'Bearer {self.kc_h.get_token()}'
             }
 
-            if globalParamters.USE_PROXY is True:
+            if GlobalParamters.USE_PROXY is True:
                 req = get(url, headers=headers,
-                          proxies=globalParamters.CONF['proxies'])
+                          proxies=GlobalParamters.CONF['proxies'])
             else:
                 req = get(url, headers=headers)
 
@@ -98,8 +98,8 @@ class RegistryHandler:
         self._logging.info('Getting all Twins for BPN: %s',bpn)
         twins = []
         load_twin_list = False
-        file_name = f"{globalParamters.CONF['twins_pickle_pre_name']}_{bpn['value']}.pickle"
-        pickle_path = os.path.join(globalParamters.ROOT_DIR, file_name)
+        file_name = f"{GlobalParamters.CONF['twins_pickle_pre_name']}_{bpn['value']}.pickle"
+        pickle_path = os.path.join(GlobalParamters.ROOT_DIR, file_name)
 
         if os.path.isfile(pickle_path):
             twins = fH.load_pickle(pickle_path, 'rb')
@@ -120,16 +120,16 @@ class RegistryHandler:
                 params = """assetIds=[{"key":"ManufacturerId","value":\"""" + \
                     bpn['value']+""""}]"""
                 get_shells = "registry/lookup/shells"
-                url = urljoin(globalParamters.CONF['registry_url'], get_shells)
+                url = urljoin(GlobalParamters.CONF['registry_url'], get_shells)
                 self._logging.debug('url: %s',url)
                 headers = {
                     'Authorization': f'Bearer {self.kc_h.get_token()}',
                     'Content-Type': 'application/x-www-form-urlencoded'
 
                 }
-                if globalParamters.USE_PROXY is True:
+                if GlobalParamters.USE_PROXY is True:
                     req = get(url, params=params, headers=headers,
-                              proxies=globalParamters.CONF['proxies'])
+                              proxies=GlobalParamters.CONF['proxies'])
                 else:
                     req = get(url, params=params,
                               headers=headers, proxies=None)
@@ -138,7 +138,7 @@ class RegistryHandler:
 
                 twins = list( map(lambda x: {
                     'urn': x,
-                    'status': globalParamters.Status.NEW.name,
+                    'status': GlobalParamters.Status.NEW.name,
                     'shell': {},
                     'checkresult': [],
                     'bpn': bpn['value']}, req.json()))
@@ -152,11 +152,11 @@ class RegistryHandler:
         self._logging.info('Feching the twins')
         if len(twins) >= 1:
             for i in tqdm(range(len(twins))):
-                if twins[i]['status'] == globalParamters.Status.NEW.name:
+                if twins[i]['status'] == GlobalParamters.Status.NEW.name:
                     # self._logging.debug(f"get Twin from Registry: {twins[i]}")
                     self._logging.debug("get Twin from Registry: %s", twins[i])
                     twins[i]['shell'] = self.get_twin(twins[i])
-                    twins[i]['status'] = globalParamters.Status.TWINLOADED.name
+                    twins[i]['status'] = GlobalParamters.Status.TWINLOADED.name
                     # twins[i]['bpn'] = bpn['value']
                     sleep(uniform(0, 0.2))
 

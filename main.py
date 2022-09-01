@@ -8,11 +8,11 @@ import logging
 import logging.config
 import datetime
 import pandas as pd
-import globalParamters
+import global_parameters as GlobalParamters
 from registry_handler import RegistryHandler
 from twin_check import TwinCheck
-import fileHandler as fH
-from keycloackHandlerMemory import KeycloackHandler
+import file_handler as fH
+from keycloack_handler_memory import KeycloackHandler
 
 __author__ = "Johannes Zahn"
 __copyright__ = """
@@ -76,7 +76,7 @@ if __name__ == '__main__':
 
     # setup logging
     _logging_conf = fH.read_yaml(os.path.join(
-        globalParamters.ROOT_DIR, 'logging.yaml'))
+        GlobalParamters.ROOT_DIR, 'logging.yaml'))
     logging.config.dictConfig(_logging_conf)
     _logging = logging.getLogger(__name__)
 
@@ -87,12 +87,12 @@ if __name__ == '__main__':
 
     #Load application configuration
     conf = fH.read_yaml(os.path.join(
-        globalParamters.ROOT_DIR, 'settings.yaml'))
-    globalParamters.set_conf(conf)
+        GlobalParamters.ROOT_DIR, 'settings.yaml'))
+    GlobalParamters.set_conf(conf)
     _logging.info('-' * 60)
     _logging.info('Configuration:')
 
-    for key, value in globalParamters.CONF.items():
+    for key, value in GlobalParamters.CONF.items():
         # _logging.info(f'   {key:23} {value}')
         _logging.info('  %23s %s', key, value)
 
@@ -101,21 +101,21 @@ if __name__ == '__main__':
     # Application Setup
     _logging.info('Application Setup:')
 
-    if globalParamters.CONF['force_reload']:
-        globalParamters.set_force_reload(True)
-    # _logging.info(f'   forced_reload\t\t{globalParamters.FORCE_RELOAD}')
-    _logging.info('   forced_reload\t\t%s',globalParamters.FORCE_RELOAD)
+    if GlobalParamters.CONF['force_reload']:
+        GlobalParamters.set_force_reload(True)
+    # _logging.info(f'   forced_reload\t\t{GlobalParamters.FORCE_RELOAD}')
+    _logging.info('   forced_reload\t\t%s',GlobalParamters.FORCE_RELOAD)
 
-    if 'proxies' in globalParamters.CONF:
-        if globalParamters.CONF['proxies'] != {}:
-            globalParamters.set_use_proxy(True)
-        # _logging.info(f'   use_proxy\t\t\t{globalParamters.USE_PROXY}')
-        _logging.info('   use_proxy\t\t\t%s',globalParamters.USE_PROXY)
+    if 'proxies' in GlobalParamters.CONF:
+        if GlobalParamters.CONF['proxies'] != {}:
+            GlobalParamters.set_use_proxy(True)
+        # _logging.info(f'   use_proxy\t\t\t{GlobalParamters.USE_PROXY}')
+        _logging.info('   use_proxy\t\t\t%s',GlobalParamters.USE_PROXY)
 
-    if len(globalParamters.CONF['bpn']) > 1:
-        globalParamters.set_multiple_bpns(True)
-    # _logging.info(f'   multiple_bpns\t\t{globalParamters.MULTIPLE_BPNS}')
-    _logging.info('   multiple_bpns\t\t%s',globalParamters.MULTIPLE_BPNS)
+    if len(GlobalParamters.CONF['bpn']) > 1:
+        GlobalParamters.set_multiple_bpns(True)
+    # _logging.info(f'   multiple_bpns\t\t{GlobalParamters.MULTIPLE_BPNS}')
+    _logging.info('   multiple_bpns\t\t%s',GlobalParamters.MULTIPLE_BPNS)
     _logging.info('-' * 60)
 
     # Application start
@@ -124,9 +124,9 @@ if __name__ == '__main__':
 
     for bpn in conf['bpn']:
 
-        if globalParamters.FORCE_RELOAD is True:
-            file_name = f"{globalParamters.CONF['twins_pickle_pre_name']}_{bpn['value']}.pickle"
-            pickle_path = os.path.join(globalParamters.ROOT_DIR, file_name)
+        if GlobalParamters.FORCE_RELOAD is True:
+            file_name = f"{GlobalParamters.CONF['twins_pickle_pre_name']}_{bpn['value']}.pickle"
+            pickle_path = os.path.join(GlobalParamters.ROOT_DIR, file_name)
             fH.remove_file(pickle_path)
 
         shells = rH.get_twins_by_bpn(bpn)

@@ -4,7 +4,8 @@ import datetime
 import logging
 import string
 from requests import post, exceptions
-import globalParamters
+import global_parameters as GlobalParamters
+
 
 __author__ = "Johannes Zahn"
 __copyright__ = """
@@ -40,8 +41,8 @@ class KeycloackHandler:
     def __init__(self) -> None:
         self._logging = logging.getLogger(__name__)
 
-        self.keycloack_host_full = f"{globalParamters.CONF['keycloack_host']}\
-            {globalParamters.CONF['keycloack_realm']}"
+        self.keycloack_host_full = f"{GlobalParamters.CONF['keycloack_host']}\
+            {GlobalParamters.CONF['keycloack_realm']}"
 
         self._logging.debug("keycloack_host_full: %s",
                             self.keycloack_host_full)
@@ -50,8 +51,8 @@ class KeycloackHandler:
 
         self.data = {
             'grant_type': 'client_credentials',
-            'client_id': globalParamters.CONF['client_id'],
-            'client_secret': globalParamters.CONF['client_secret']
+            'client_id': GlobalParamters.CONF['client_id'],
+            'client_secret': GlobalParamters.CONF['client_secret']
         }
         self._token = {}
 
@@ -75,10 +76,10 @@ class KeycloackHandler:
         if _get_token:
             self._logging.debug('REFRESH TICKET')
             try:
-                if globalParamters.USE_PROXY is True:
+                if GlobalParamters.USE_PROXY is True:
                     self._logging.debug('Get Token via Proxy')
                     req = post(self.keycloack_host_full, data=self.data,
-                               headers=self.headers, proxies=globalParamters.CONF['proxies'])
+                               headers=self.headers, proxies=GlobalParamters.CONF['proxies'])
                 else:
                     self._logging.debug('Get Token without Proxy')
                     req = post(self.keycloack_host_full,
