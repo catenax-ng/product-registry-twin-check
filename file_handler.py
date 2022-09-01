@@ -11,8 +11,7 @@ import yaml
 
 __author__ = "Johannes Zahn"
 __copyright__ = """
- Copyright (c) 2022 
-       2022: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
 
  See the NOTICE file(s) distributed with this work for additional
  information regarding copyright ownership.
