@@ -10,9 +10,9 @@ import datetime
 import pandas as pd
 import globalParamters
 from registry_handler import RegistryHandler
-from twinCheck import TwinCheck
+from twin_check import TwinCheck
 import fileHandler as fH
-from keycloackHandlerMemory import keycloackHandler
+from keycloackHandlerMemory import KeycloackHandler
 
 __author__ = "Johannes Zahn"
 __copyright__ = """
@@ -119,7 +119,7 @@ if __name__ == '__main__':
     _logging.info('-' * 60)
 
     # Application start
-    kcH = keycloackHandler()
+    kcH = KeycloackHandler()
     rH = RegistryHandler(kcH)
 
     for bpn in conf['bpn']:

@@ -1,9 +1,8 @@
-""""""
+""" Keyckloack handler manages communication with the keycloak instance
+"""
 import datetime
-import os.path
 import logging
 import string
-import fileHandler as fH
 from requests import post, exceptions
 import globalParamters
 
@@ -33,23 +32,28 @@ __maintainer__ = ""
 __email__ = ""
 __status__ = "exploration"
 
-class keycloackHandler:
+
+class KeycloackHandler:
     """This class helps to reload the token only when neccessary. and stores it in a class variable
     """
 
     def __init__(self) -> None:
         self._logging = logging.getLogger(__name__)
 
-        self.KEYCLOAK_HOST_FULL = f"{globalParamters.CONF['keycloack_host']}{globalParamters.CONF['keycloack_realm']}"
-        self._logging.debug(f"KEYCLOAK_HOST_FULL: {self.KEYCLOAK_HOST_FULL}")
+        self.keycloack_host_full = f"{globalParamters.CONF['keycloack_host']}\
+            {globalParamters.CONF['keycloack_realm']}"
+
+        self._logging.debug("keycloack_host_full: %s",
+                            self.keycloack_host_full)
+
         self.headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+
         self.data = {
             'grant_type': 'client_credentials',
             'client_id': globalParamters.CONF['client_id'],
             'client_secret': globalParamters.CONF['client_secret']
         }
         self._token = {}
-        pass
 
 
     def get_token(self) -> string:
@@ -60,34 +64,34 @@ class keycloackHandler:
         :rtype: string
         """
         _get_token = False
-        
+
         if self._token == {}:
             _get_token = True
-        
-        if  'access_token_expiry' in self._token:
+
+        if 'access_token_expiry' in self._token:
             if self._token['access_token_expiry'] <= datetime.datetime.now():
                 _get_token = True
 
         if _get_token:
             self._logging.debug('REFRESH TICKET')
             try:
-                if globalParamters.USE_PROXY == True:
+                if globalParamters.USE_PROXY is True:
                     self._logging.debug('Get Token via Proxy')
-                    req = post(self.KEYCLOAK_HOST_FULL, data=self.data,
+                    req = post(self.keycloack_host_full, data=self.data,
                                headers=self.headers, proxies=globalParamters.CONF['proxies'])
                 else:
                     self._logging.debug('Get Token without Proxy')
-                    req = post(self.KEYCLOAK_HOST_FULL,
+                    req = post(self.keycloack_host_full,
                                data=self.data, headers=self.headers)
-            except exceptions.RequestException as e:
-                self._logging.error(e)
-                raise SystemExit()
+            except exceptions.RequestException as exc:
+                self._logging.error(exc)
+                raise SystemExit() from exc
 
             self._token = req.json()
             self._token['access_token_expiry'] = datetime.datetime.now(
             ) + datetime.timedelta(seconds=+self._token['expires_in'])
 
             self._logging.debug(
-                f"  new_expiry: {self._token['access_token_expiry']}")
+                "  new_expiry: %s", self._token['access_token_expiry'])
 
         return self._token['access_token']
