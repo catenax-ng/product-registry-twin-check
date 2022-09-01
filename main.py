@@ -9,7 +9,7 @@ import logging.config
 import datetime
 import pandas as pd
 import globalParamters
-import registryHandler
+from registry_handler import RegistryHandler
 from twinCheck import TwinCheck
 import fileHandler as fH
 from keycloackHandlerMemory import keycloackHandler
@@ -120,7 +120,7 @@ if __name__ == '__main__':
 
     # Application start
     kcH = keycloackHandler()
-    rH = registryHandler.registryHandler(kcH)
+    rH = RegistryHandler(kcH)
 
     for bpn in conf['bpn']:
 
@@ -129,7 +129,7 @@ if __name__ == '__main__':
             pickle_path = os.path.join(globalParamters.ROOT_DIR, file_name)
             fH.remove_file(pickle_path)
 
-        shells = rH.getTwinsByBPN(bpn)
+        shells = rH.get_twins_by_bpn(bpn)
         tC = TwinCheck()
         shells = tC.check_twins(shells)
         write_twin_as_csv(shells, bpn)
