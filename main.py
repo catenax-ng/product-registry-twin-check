@@ -17,6 +17,7 @@ from keycloack_handler_memory import KeycloackHandler
 __author__ = "Johannes Zahn"
 __copyright__ = """
  Copyright (c) 2022 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ Copyright (c) 2021,2022 Contributors to the CatenaX (ng) GitHub Organisation.
 
  See the NOTICE file(s) distributed with this work for additional
  information regarding copyright ownership.
