@@ -77,7 +77,7 @@ class FileHandler:
         #     pass
         # else:
         self.logging.debug('file is beeing created: %s', file_path)
-        with open(file_path, mode=mode, encoding='utf-8') as fio:
+        with open(file_path, mode=mode) as fio:
             pickle.dump(content, fio)
 
     def load_pickle(self, file_path: string, mode='rb'):

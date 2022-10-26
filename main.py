@@ -52,7 +52,11 @@ __status__ = "exploration"
 # Maybe: get VANs
 # TODO: Add more information to resultset to identify an object
 # TODO: Wrapping config in a class
+# TODO: refactor config file 
+# TODO: Add check against the testdatafile
+# TODO: manufactureId Logic is not tested correctly
 
+SETTINGS_FILENAME = 'settings_pentest.yaml'
 
 def write_twin_as_csv(twins, bpn_o):
     """this function writes the result in a human readable result to disk
@@ -65,8 +69,7 @@ def write_twin_as_csv(twins, bpn_o):
     for i in twins:
         del i['shell']
     df_twins = pd.DataFrame.from_dict(twins)
-    df_twins.to_csv(f"{conf['check_output_filename']}_{bpn_o['company']}_\
-                    {bpn_o['value']}_{datetime.datetime.now().strftime('%y%m%d')}.csv",
+    df_twins.to_csv(f"{conf['check_output_filename']}_{bpn_o['company']}_{bpn_o['value']}_{datetime.datetime.now().strftime('%y%m%d')}.csv",
                     index=False,
                     header=True)
 
@@ -86,7 +89,7 @@ if __name__ == '__main__':
 
     #Load application configuration
     conf = fH.read_yaml(os.path.join(
-        GlobalParamters.ROOT_DIR, 'settings.yaml'))
+        GlobalParamters.ROOT_DIR, SETTINGS_FILENAME))
     GlobalParamters.set_conf(conf)
     _logging.info('-' * 60)
     _logging.info('Configuration:')
@@ -109,7 +112,7 @@ if __name__ == '__main__':
         if GlobalParamters.CONF['proxies'] != {}:
             GlobalParamters.set_use_proxy(True)
         # _logging.info(f'   use_proxy\t\t\t{GlobalParamters.USE_PROXY}')
-        _logging.info('   use_proxy\t\t\t%s',GlobalParamters.USE_PROXY)
+    _logging.info('   use_proxy\t\t\t%s',GlobalParamters.USE_PROXY)
 
     if len(GlobalParamters.CONF['bpn']) > 1:
         GlobalParamters.set_multiple_bpns(True)

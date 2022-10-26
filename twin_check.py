@@ -57,9 +57,9 @@ class TwinCheck:
         """
         self._logger.info('.'*60)
         self._logger.info('Start Twin Checkup')
-
+        self._logger.debug('is checking %d twins', len(twins))
         for i in tqdm(range(len(twins))):
-            if twins[i]['status'] == GlobalParamters.Status.TWINLOADED.name:
+            if 'status' not in twins[i] or twins[i]['status'] == GlobalParamters.Status.TWINLOADED.name:
                 twins[i]['checkresult'].append(self.check1(twins[i]))
                 twins[i]['checkresult'].append(self.check2(twins[i]))
                 twins[i]['checkresult'].append(self.check3(twins[i]))

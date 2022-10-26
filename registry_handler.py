@@ -99,7 +99,7 @@ class RegistryHandler:
         load_twin_list = False
         file_name = f"{GlobalParamters.CONF['twins_pickle_pre_name']}_{bpn['value']}.pickle"
         pickle_path = os.path.join(GlobalParamters.ROOT_DIR, file_name)
-
+        manufacturerId = 'manufacturerId'
         if os.path.isfile(pickle_path):
             twins = fH.load_pickle(pickle_path, 'rb')
             # len([twin for twin in twins if twin['bpn'] == bpn['value'] ])
@@ -116,7 +116,7 @@ class RegistryHandler:
 
         if load_twin_list:
             try:
-                params = """assetIds=[{"key":"ManufacturerId","value":\"""" + \
+                params = """assetIds=[{"key":\"""" + manufacturerId + """","value":\"""" + \
                     bpn['value']+""""}]"""
                 get_shells = "registry/lookup/shells"
                 url = urljoin(GlobalParamters.CONF['registry_url'], get_shells)
@@ -163,11 +163,70 @@ class RegistryHandler:
                     fH.write_pickle(pickle_path, twins)
         else:
             self._logging.warning(
-                'for %s %s no Twins exists in the Digital Twin Registry', 
+                'for %s %s no Twins exists in the Digital Twin Registry. Check if %s is in the correct format', 
                 bpn['company'],
-                bpn['value'])
-
+                bpn['value'],manufacturerId)
+        
         fH.write_pickle(pickle_path, twins)
         self._logging.info('')
-        twins = [twin.pop('bpn', None) for twin in twins]
+        self._logging.info('safed %d twins to file', len(twins))
+        self._logging.info('')
+        self._logging.info('')
+        
+        # twins = [twin.pop('bpn', None) for twin in twins]
+        return twins
+
+
+    def get_all_twins(self):
+        self._logging.info('Getting all Twins from the registry Service')
+        twins = []
+        load_twin_list = False
+        
+        file_name = f"all_twins.pickle"
+        pickle_path = os.path.join(GlobalParamters.ROOT_DIR, file_name)
+        manufacturerId = 'manufacturerId'
+        if os.path.isfile(pickle_path):
+            twins = fH.load_pickle(pickle_path, 'rb')
+        else:
+            load_twin_list = True
+        
+        
+        if load_twin_list:
+            try:
+                get_shells = "registry/shell-descriptors"
+                url = urljoin(GlobalParamters.CONF['registry_url'], get_shells)
+                self._logging.debug('url: %s',url)
+                headers = {
+                    'Authorization': f'Bearer {self.kc_h.get_token()}',
+                    'Content-Type': 'application/x-www-form-urlencoded'
+
+                }
+                if GlobalParamters.USE_PROXY is True:
+                    req = get(url, headers=headers,
+                              proxies=GlobalParamters.CONF['proxies'])
+                else:
+                    req = get(url,
+                              headers=headers, proxies=None)
+
+                self._logging.debug('Request status: %s', req)
+
+                # TODO: Pegenation
+                
+                req = req.json()
+                
+                for i in req['totalPages']:
+                    print(i)
+                
+                twins = list( map(lambda x: {
+                    'urn': x,
+                    'status': GlobalParamters.Status.NEW.name,
+                    'shell': {},
+                    'checkresult': []
+                    }, req.json()))
+                fH.write_pickle(pickle_path, twins)
+
+            except exceptions.RequestException as exc:
+                self._logging.error(exc)
+                raise SystemExit() from exc
+        
         return twins

@@ -40,8 +40,7 @@ class KeycloackHandler:
     def __init__(self) -> None:
         self._logging = logging.getLogger(__name__)
 
-        self.keycloack_host_full = f"{GlobalParamters.CONF['keycloack_host']}\
-            {GlobalParamters.CONF['keycloack_realm']}"
+        self.keycloack_host_full = f"{GlobalParamters.CONF['keycloack_host']}{GlobalParamters.CONF['keycloack_realm']}"
 
         self._logging.debug("keycloack_host_full: %s",
                             self.keycloack_host_full)
@@ -88,10 +87,16 @@ class KeycloackHandler:
                 raise SystemExit() from exc
 
             self._token = req.json()
-            self._token['access_token_expiry'] = datetime.datetime.now(
-            ) + datetime.timedelta(seconds=+self._token['expires_in'])
+            
+            if 'error' in self._token.keys():
+                self._logging.error(self._token)
+                raise SystemExit()
+            else:
+                self._logging.debug('token %s', self._token)
+                self._token['access_token_expiry'] = datetime.datetime.now(
+                ) + datetime.timedelta(seconds=+self._token['expires_in'])
 
-            self._logging.debug(
-                "  new_expiry: %s", self._token['access_token_expiry'])
+                self._logging.debug(
+                    "  new_expiry: %s", self._token['access_token_expiry'])
 
         return self._token['access_token']
