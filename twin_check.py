@@ -64,6 +64,7 @@ class TwinCheck:
                 twins[i]['checkresult'].append(self.check2(twins[i]))
                 twins[i]['checkresult'].append(self.check3(twins[i]))
                 twins[i]['checkresult'].append(self.check4(twins[i]))
+                twins[i]['checkresult'].append(self.check5(twins[i]))
 
                 # Set Check if all tests have passed
                 twins[i]['check'] = Check.FAILED.name
@@ -170,3 +171,23 @@ class TwinCheck:
             check4['result'] = Check.FAILED.name
 
         return check4
+
+
+    def check5(self,twin):
+        """Tis checks if the shell contains key "van" in correct camelcase spelling in the specificAssetIds
+
+        :param twin: digital twin
+        :type twin: dict
+        :return: test result object
+        :rtype: dict
+        """
+        check5 = { 'id':'check5', 'name':'Check if the shell contains key "van" in correct camelcase spelling in the specificAssetIds'}
+        shell = twin['shell']
+
+        check5['result'] = Check.PASSED.name
+        for entry in shell['specificAssetIds']:
+            if entry['key'].lower() == 'van':
+                if entry['key'] != 'van':
+                    check5['result'] = Check.FAILED.name
+
+        return check5
