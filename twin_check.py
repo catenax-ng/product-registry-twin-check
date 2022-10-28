@@ -66,6 +66,8 @@ class TwinCheck:
                 twins[i]['checkresult'].append(self.check4(twins[i]))
                 twins[i]['checkresult'].append(self.check5(twins[i]))
                 twins[i]['checkresult'].append(self.check6(twins[i]))
+                twins[i]['checkresult'].append(self.check7(twins[i]))
+                twins[i]['checkresult'].append(self.check8(twins[i]))
 
                 # Set Check if all tests have passed
                 twins[i]['check'] = Check.FAILED.name
@@ -211,6 +213,54 @@ class TwinCheck:
         valid_key_correct = len([x for x in shell['specificAssetIds'] if x['key'].lower() == valid_key.lower() and x['key'] == valid_key]) > 0
 
         if valid_key_found and valid_key_correct:
+            check['result'] = Check.PASSED.name
+        else:
+            check['result'] = Check.FAILED.name
+
+        return check
+
+
+    def check7(self,twin):
+        """This checks if mandatory attribute manufacturerPartId exists in specificAssetIds and is written correctly with camel case
+
+        :param twin: digital twin
+        :type twin: dict
+        :return: test result object
+        :rtype: dict
+        """
+
+        valid_key = 'manufacturerPartId'
+        check = { 'id':'check7', 'name':f'Check if mandatory attribute {valid_key} exists in specificAssetIds and is written correctly with camel case'}
+        shell = twin['shell']
+        
+        valid_key_found = len([x for x in shell['specificAssetIds'] if x['key'].lower() == valid_key.lower()]) > 0
+        valid_key_correct = len([x for x in shell['specificAssetIds'] if x['key'].lower() == valid_key.lower() and x['key'] == valid_key]) > 0
+
+        if valid_key_found and valid_key_correct:
+            check['result'] = Check.PASSED.name
+        else:
+            check['result'] = Check.FAILED.name
+
+        return check
+
+
+    def check8(self,twin):
+        """This checks if (optional) attribute customerPartId in specificAssetIds is written correctly with camel case
+
+        :param twin: digital twin
+        :type twin: dict
+        :return: test result object
+        :rtype: dict
+        """
+
+        valid_key = 'customerPartId'
+        check = { 'id':'check8', 'name':f'Check if (optional) attribute {valid_key} in specificAssetIds is written correctly with camel case'}
+        shell = twin['shell']
+        
+        valid_key_found = len([x for x in shell['specificAssetIds'] if x['key'].lower() == valid_key.lower()]) > 0
+        valid_key_correct = len([x for x in shell['specificAssetIds'] if x['key'].lower() == valid_key.lower() and x['key'] == valid_key]) > 0
+
+        if not valid_key_found or (valid_key_found and valid_key_correct):
             check['result'] = Check.PASSED.name
         else:
             check['result'] = Check.FAILED.name
