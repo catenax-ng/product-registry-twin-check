@@ -55,6 +55,7 @@ __status__ = "exploration"
 # TODO: refactor config file 
 # TODO: Add check against the testdatafile
 # TODO: manufactureId Logic is not tested correctly
+# TODO: VAN anstatt van in Check einbauen
 
 SETTINGS_FILENAME = 'settings_pentest.yaml'
 
