@@ -1,6 +1,6 @@
 version: 1
-client_id: 'sa-cl6-cx-9'
-client_secret: 'yeuF9syHZdgc247I517ydjYQw5fD8PJh'
+client_id: ''
+client_secret: ''
 keycloack_host: 'https://centralidp.demo.catena-x.net'
 keycloack_realm: '/auth/realms/CX-Central/protocol/openid-connect/token'
 registry_url: 'https://semantics.int.demo.catena-x.net'
