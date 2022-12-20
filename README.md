@@ -1,5 +1,33 @@
 # product-registry-twin-check
 
+## Todos
+
+<details>
+  <summary>Done Tasks</summary>
+
+* [x] CRITICAL SOLVE GLOBALS ISSUE ==> initialize only once if inctance exists?
+* [x] ✅ Add functionality to force reload
+* [x] ✅ Refactor code into Classes and restructure programm
+* [x] ✅ Add functionality fo Multiple BPN's
+* [x] ✅ draw Statusbar
+* [x] ✅ Proxy settings variable
+* [x] ✅ Documentation
+* [x] ✅ Refactor getTwinsByBPN force reload strategy (a pickl per bpn => abstraction a lot easier)
+* [x] add list of valid semanticIds into the configuration
+* [x] Refactor Checks and Checkclass
+* [x] manufactureId Logic is not tested correctly
+* [x] Add more information to resultset to identify an object
+
+</details>
+
+* [ ] Maybe: Write tests for checks(dont know how yet)
+* [ ] Maybe: Wrapping config in a class
+* [ ] Maybe: refactor config file
+* [ ] TODO: Add check against the testdatafile
+* [ ] TODO: Add check for different cases BomAsBuilt & BomAsPlanned
+
+## Description
+
 This repository holds a script to check Digital Twins within the Registry.
 
 Currently the script checks the following:
@@ -17,3 +45,4 @@ Select or add a BPN to the list of BPN's and start the programm with **python ma
 ## Debugging
 
 If you need further information while running this programm set the option **Level** to **DEBUG** on the root level in the **logging.yaml** file.
+

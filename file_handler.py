@@ -92,7 +92,7 @@ class FileHandler:
         if os.path.exists(file_path):
             self.logging.debug('file exists: %s', file_path)
             try:
-                with open(file_path, mode=mode, encoding='utf-8') as fio:
+                with open(file_path, mode=mode) as fio:
                     return pickle.load(fio)
             except EnvironmentError as exc:
                 raise EnvironmentError() from exc

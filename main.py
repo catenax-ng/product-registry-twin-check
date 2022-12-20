@@ -39,27 +39,9 @@ __maintainer__ = ""
 __email__ = ""
 __status__ = "exploration"
 
+SETTINGS_FILENAME = 'settings_int.yaml'
 
-# ✅ CRITICAL SOLVE GLOBALS ISSUE ==> initialize only once if inctance exists?
-# ✅ Add functionality to force reload
-# ✅ Refactor code into Classes and restructure programm
-# ✅ Add functionality fo Multiple BPN's
-# ✅ draw Statusbar
-# ✅ Proxy settings variable
-# ✅ Documentation
-# ✅ Refactor getTwinsByBPN force reload strategy (a pickl per bpn => abstraction a lot easier)
-# Maybe: Write tests for checks(dont know how yet)
-# Maybe: get VANs
-# TODO: Add more information to resultset to identify an object
-# TODO: Wrapping config in a class
-# TODO: refactor config file 
-# TODO: Add check against the testdatafile
-# TODO: manufactureId Logic is not tested correctly
-# TODO: VAN anstatt van in Check einbauen
-
-SETTINGS_FILENAME = 'settings_pentest.yaml'
-
-def write_twin_as_csv(twins, bpn_o):
+def write_bpn_twin_as_csv(twins, bpn_o):
     """this function writes the result in a human readable result to disk
 
     :param twins: list of twins
@@ -70,7 +52,16 @@ def write_twin_as_csv(twins, bpn_o):
     for i in twins:
         del i['shell']
     df_twins = pd.DataFrame.from_dict(twins)
-    df_twins.to_csv(f"{conf['check_output_filename']}_{bpn_o['company']}_{bpn_o['value']}_{datetime.datetime.now().strftime('%y%m%d')}.csv",
+    df_twins.to_csv(f"{GlobalParamters.CONF['check_output_filename']}_{bpn_o['company']}_{bpn_o['value']}_{datetime.datetime.now().strftime('%y%m%d')}.csv",
+                    index=False,
+                    header=True)
+
+def write_twins_as_csv(twins):
+    for i in twins:
+        del i['shell']
+    
+    df_twins = pd.DataFrame.from_dict(twins)
+    df_twins.to_csv(f"{GlobalParamters.CONF['check_output_filename']}_{datetime.datetime.now().strftime('%y%m%d')}.csv",
                     index=False,
                     header=True)
 
@@ -115,24 +106,44 @@ if __name__ == '__main__':
         # _logging.info(f'   use_proxy\t\t\t{GlobalParamters.USE_PROXY}')
     _logging.info('   use_proxy\t\t\t%s',GlobalParamters.USE_PROXY)
 
-    if len(GlobalParamters.CONF['bpn']) > 1:
-        GlobalParamters.set_multiple_bpns(True)
-    # _logging.info(f'   multiple_bpns\t\t{GlobalParamters.MULTIPLE_BPNS}')
-    _logging.info('   multiple_bpns\t\t%s',GlobalParamters.MULTIPLE_BPNS)
+    if 'bpn' in GlobalParamters.CONF:
+        if len(GlobalParamters.CONF['bpn']) > 1:
+            GlobalParamters.set_multiple_bpns(True)
+        # _logging.info(f'   multiple_bpns\t\t{GlobalParamters.MULTIPLE_BPNS}')
+        _logging.info('   multiple_bpns\t\t%s',GlobalParamters.MULTIPLE_BPNS)
+    else:
+        _logging.info('   multiple_bpns\t\tall bpns are beeing fetched')
+    _logging.info('-' * 60)
+
+    
+    if len(GlobalParamters.CONF['semanticIds']) > 1: 
+        _logging.info('    semanticIds:')
+        for i in range(0,len(GlobalParamters.CONF['semanticIds'])):
+            _logging.info(f"\t\t\t\t{GlobalParamters.CONF['semanticIds'][i]}")
+    else:
+        _logging.error('no semanticIds to validate against it are available')
+        SystemError(0)
+        
     _logging.info('-' * 60)
 
     # Application start
     kcH = KeycloackHandler()
     rH = RegistryHandler(kcH)
 
-    for bpn in conf['bpn']:
+    # for bpn in conf['bpn']:
+    #     if GlobalParamters.FORCE_RELOAD is True:
+    #         file_name = f"{GlobalParamters.CONF['twins_pickle_pre_name']}_{bpn['value']}.pickle"
+    #         pickle_path = os.path.join(GlobalParamters.ROOT_DIR, file_name)
+    #         fH.remove_file(pickle_path)
 
-        if GlobalParamters.FORCE_RELOAD is True:
-            file_name = f"{GlobalParamters.CONF['twins_pickle_pre_name']}_{bpn['value']}.pickle"
-            pickle_path = os.path.join(GlobalParamters.ROOT_DIR, file_name)
-            fH.remove_file(pickle_path)
-
-        shells = rH.get_twins_by_bpn(bpn)
-        tC = TwinCheck()
-        shells = tC.check_twins(shells)
-        write_twin_as_csv(shells, bpn)
+    #     shells = rH.get_twins_by_bpn(bpn)
+    #     tC = TwinCheck()
+    #     shells = tC.check_twins(shells)
+    #     write_bpn_twin_as_csv(shells, bpn)
+       
+    shells = rH.get_all_twins()
+    tC = TwinCheck()
+    shells = tC.check_twins(shells)
+    write_twins_as_csv(shells) 
+        
+    

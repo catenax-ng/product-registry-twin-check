@@ -60,234 +60,205 @@ class TwinCheck:
         self._logger.debug('is checking %d twins', len(twins))
         for i in tqdm(range(len(twins))):
             if 'status' not in twins[i] or twins[i]['status'] == GlobalParamters.Status.TWINLOADED.name:
-                twins[i]['checkresult'].append(self.check1(twins[i]))
-                twins[i]['checkresult'].append(self.check2(twins[i]))
-                twins[i]['checkresult'].append(self.check3(twins[i]))
-                twins[i]['checkresult'].append(self.check4(twins[i]))
-                twins[i]['checkresult'].append(self.check5(twins[i]))
-                twins[i]['checkresult'].append(self.check6(twins[i]))
-                twins[i]['checkresult'].append(self.check7(twins[i]))
-                twins[i]['checkresult'].append(self.check8(twins[i]))
-                twins[i]['checkresult'].append(self.check9(twins[i]))
-
-                # Set Check if all tests have passed
-                twins[i]['check'] = Check.FAILED.name
-                if len([x for x in twins[i]['checkresult']
-                        if x['result'] == Check.FAILED.name]) == 0:
-                    twins[i]['check'] = Check.PASSED.name
+                
+                twins[i]['aas uuid:urn format'] = self.check_aasId_valid_urn_format(twins[i])
+                twins[i]['globalAssetId exists'] = self.check_globalAssetId(twins[i])
+                twins[i]['globalAssetId uuid:urn format'] = self.check_globalAssetId_valid_urn_format(twins[i])
+                twins[i]['aasId!=globalAssetId'] = self.check_aasId_not_globalAssetId(twins[i])
+                
+                twins[i]['valid semanticIds'], twins[i]['valid semanticIds info'] = self.check_valid_semanicIds(twins[i])
+                twins[i]['manufacturerId in specificAssetIds'],twins[i]['manufacturerId in specificAssetIds info'] = self.check_Id_in_specificAssetId(twins[i],'manufacturerId')
+                twins[i]['bpn'],twins[i]['bpn schema'] = self.extract_bpn(twins[i])
+                
+                twins[i]['partInstanceId in specificAssetIds'],twins[i]['partInstanceId in specificAssetIds info'] = self.check_Id_in_specificAssetId(twins[i],'partInstanceId')
+                twins[i]['manufacturerPartId in specificAssetIds'],twins[i]['manufacturerPartId in specificAssetIds info'] = self.check_Id_in_specificAssetId(twins[i],'manufacturerPartId')
+                
+                twins[i]['optional customerPartId in specificAssetIds'],twins[i]['optional customerPartId in specificAssetIds info'] = self.check_optional_Id_in_specificAssetId(twins[i],'customerPartId')
+                twins[i]['optional batchId in specificAssetIds'],twins[i]['optional batchId in specificAssetIds info'] = self.check_optional_Id_in_specificAssetId(twins[i],'batchId')
+                            
+                twins[i]['check'] = Check.PASSED.name
+                if Check.FAILED.name in twins[i].values():
+                    twins[i]['check'] = Check.FAILED.name
 
                 # set Status
                 twins[i]['status'] = GlobalParamters.Status.TESTED.name
         self._logger.info(' ')
         return twins
 
-    def check1(self,twin):
-        """This checks if the global AssetId is different to the aasID
-
-        :param twin: digital twin
-        :type twin: dict
-        :return: test result object
-        :rtype: dict
-        """
-        check1 = { 'id':'check1', 'name':'globalAssetId != aasId validation'}
-        shell = twin['shell']
-
-        if shell['globalAssetId']['value'][0] != shell['identification']:
-            check1['result'] = Check.PASSED.name
-        else:
-            check1['result'] = Check.FAILED.name
-
-        return check1
-
-
-
-    def check2(self,twin):
-        """check2 checks if the semanticIDs are of a valid structure
-
-        :param twin: digital twin
-        :type twin: dict
-        :return: test result object
-        :rtype: dict
-        """
-
-        check2 = { 'id':'check2', 'name':'Check if correct SemanticID exists'}
-        shell = twin['shell']
-
-        semantic_ids = [
-            'urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization',
-            'urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship',
-            'urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling',
-            'urn:bamm:io.catenax.certificate_of_destruction:1.0.0#CertificateOfDestruction',
-            'urn:bamm:io.catenax.vehicle.product_description:1.0.1#ProductDescription',
-            'urn:bamm:io.catenax.battery.product_description:1.0.1#ProductDescription',
-            'urn:bamm:io.catenax.return_request:1.0.0#ReturnRequest',
-            'urn:bamm:io.catenax.physical_dimension:1.0.0#PhysicalDimension',
-            'urn:bamm:io.catenax.batch:1.0.0#Batch'
-        ]
-
-        check2['result'] = Check.PASSED.name
-        check2['info'] = []
-
-        for i in range(len(shell['submodelDescriptors'])):
-            semantic_id = shell['submodelDescriptors'][i]['semanticId']['value'][0]
-            if semantic_id not in semantic_ids:
-                check2['result'] = Check.FAILED.name
-                check2['info'].append(f"format is wrong: {semantic_id}")
-
-        return check2
-
-
-
-    def check3(self,twin):
-        """This checks if a manaufacturerId is specified in the specificAssetIds
-
-        :param twin: digital twin
-        :type twin: dict
-        :return: test result object
-        :rtype: dict
-        """
-        valid_key = 'manufacturerId'
-        check3 = { 'id':'check3', 'name':f'Check if {valid_key} exists in specificAssetIds'}
-        shell = twin['shell']
-        check = [x for x in shell['specificAssetIds'] if x['key'] == valid_key]
-        if not check:
-            check3['result'] = Check.FAILED.name
-        else:
-            check3['result'] = Check.PASSED.name
-        return check3
-
-
-    def check4(self,twin):
+    
+    def check_aasId_valid_urn_format(self,twin):
         """Tis checks if an ID has a valid URN:UUID Format
 
         :param twin: digital twin
         :type twin: dict
-        :return: test result object
-        :rtype: dict
+        :return: test result 
+        :rtype: string
         """
-        check4 = { 'id':'check4', 'name':'Check if aasID has valid urn uuid format'}
+        result = Check.FAILED.name
         shell = twin['shell']
         comp = re.compile("urn:uuid:[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}")
 
         if comp.match(shell['identification']):
-            check4['result'] = Check.PASSED.name
+            result = Check.PASSED.name
         else: 
-            check4['result'] = Check.FAILED.name
+            result = Check.FAILED.name
 
-        return check4
+        return result
+    
 
-
-    def check5(self,twin):
-        """Tis checks if the shell contains key "van" in correct camelcase spelling in the specificAssetIds
+    def check_globalAssetId(self,twin):
+        """check if globalAssetId exists
 
         :param twin: digital twin
         :type twin: dict
-        :return: test result object
-        :rtype: dict
+        :return: check result 
+        :rtype: string
         """
-        check5 = { 'id':'check5', 'name':'Check if the shell contains key "van" in correct camelcase spelling in the specificAssetIds'}
+        result = Check.FAILED.name
+        shell = twin['shell']
+        if 'globalAssetId' in shell:
+            if 'value' in shell['globalAssetId']: 
+                if len(shell['globalAssetId']['value']) > 0: 
+                    result = Check.PASSED.name
+        return result
+    
+    def check_globalAssetId_valid_urn_format(self,twin):
+        """Tis checks if an ID has a valid URN:UUID Format
+
+        :param twin: digital twin
+        :type twin: dict
+        :return: test result
+        :rtype: string
+        """
+        result = Check.FAILED.name
+        shell = twin['shell']
+        comp = re.compile("urn:uuid:[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}")
+        if 'globalAssetId' in shell:
+            if 'value' in shell['globalAssetId']: 
+                if len(shell['globalAssetId']['value']) > 0: 
+                    if comp.match(shell['globalAssetId']['value'][0]):
+                        result = Check.PASSED.name
+
+        return result
+        
+    def check_aasId_not_globalAssetId(self,twin):
+        """This checks if the global AssetId is different to the aasID
+
+        :param twin: digital twin
+        :type twin: dict
+        :return: test result 
+        :rtype: string
+        """
+        result = Check.FAILED.name
+        shell = twin['shell']
+        if 'globalAssetId' in shell:
+            if shell['globalAssetId']['value'][0] != shell['identification']:
+                result = Check.PASSED.name
+            else:
+                result = Check.FAILED.name
+
+        else: 
+            result = Check.FAILED.name
+        return result
+
+
+
+    def check_valid_semanicIds(self,twin):
+        """check2 checks if the semanticIDs are of a valid structure
+
+        :param twin: digital twin
+        :type twin: dict
+        :return: tuple check result, info
+        :rtype: tuple(string, arr)
+        """
+        result = Check.PASSED.name
         shell = twin['shell']
 
-        check5['result'] = Check.PASSED.name
-        for entry in shell['specificAssetIds']:
-            if entry['key'].lower() == 'van':
-                if entry['key'] != 'van':
-                    check5['result'] = Check.FAILED.name
+        semantic_ids = GlobalParamters.CONF['semanticIds']
+        info = []
+        
+        for i in range(len(shell['submodelDescriptors'])):
+            semantic_id = shell['submodelDescriptors'][i]['semanticId']['value'][0]
+            if semantic_id not in semantic_ids:
+                result = Check.FAILED.name
+                info.append(semantic_id)
+        return result,info
 
-        return check5
-
-
-    def check6(self,twin):
-        """This checks if a partInstanceId exists in specificAssetIds and is written correctly with camel case
+    def extract_bpn(self, twin):
+        """check if BPN exists and validates against the BPN Schema
 
         :param twin: digital twin
         :type twin: dict
-        :return: test result object
-        :rtype: dict
+        :return: bpn, schema check result
+        :rtype: tuple (string,string)
+        """
+        bpn = ''
+        valid_key = 'manufacturerId'
+        shell = twin['shell']
+        result = ''
+        valid_key_found = [x for x in shell['specificAssetIds'] if x['key'].lower() == valid_key.lower()]
+        comp = re.compile("BPN[0-9A-Z]{12}")
+
+        if len(valid_key_found) > 0:
+            bpn = valid_key_found[0]['value']
+        
+            if comp.match(bpn):
+                result = Check.PASSED.name
+            else: 
+                result = Check.FAILED.name
+        
+        return bpn, result
+
+
+    def check_Id_in_specificAssetId(self,twin, id):
+        """This checks if a ID exists in specificAssetIds and is written correctly with camel case
+
+        :param twin: digital twin
+        :type twin: dict
+        :return: tuple check result, info
+        :rtype: tuple(string, arr)
         """
 
-        valid_key = 'partInstanceId'
-        check = { 'id':'check6', 'name':f'Check if {valid_key} exists in specificAssetIds and is written correctly with camel case'}
+        valid_key = id
+        result = Check.FAILED.name
+        info = []
         shell = twin['shell']
         
-        valid_key_found = len([x for x in shell['specificAssetIds'] if x['key'].lower() == valid_key.lower()]) > 0
-        valid_key_correct = len([x for x in shell['specificAssetIds'] if x['key'].lower() == valid_key.lower() and x['key'] == valid_key]) > 0
+        valid_key_found = [x for x in shell['specificAssetIds'] if x['key'].lower() == valid_key.lower()]
+        valid_key_correct = [x for x in shell['specificAssetIds'] if x['key'].lower() == valid_key.lower() and x['key'] == valid_key]
 
-        if valid_key_found and valid_key_correct:
-            check['result'] = Check.PASSED.name
-        else:
-            check['result'] = Check.FAILED.name
-
-        return check
-
-
-    def check7(self,twin):
-        """This checks if mandatory attribute manufacturerPartId exists in specificAssetIds and is written correctly with camel case
-
-        :param twin: digital twin
-        :type twin: dict
-        :return: test result object
-        :rtype: dict
-        """
-
-        valid_key = 'manufacturerPartId'
-        check = { 'id':'check7', 'name':f'Check if mandatory attribute {valid_key} exists in specificAssetIds and is written correctly with camel case'}
-        shell = twin['shell']
-        
-        valid_key_found = len([x for x in shell['specificAssetIds'] if x['key'].lower() == valid_key.lower()]) > 0
-        valid_key_correct = len([x for x in shell['specificAssetIds'] if x['key'].lower() == valid_key.lower() and x['key'] == valid_key]) > 0
-
-        if valid_key_found and valid_key_correct:
-            check['result'] = Check.PASSED.name
-        else:
-            check['result'] = Check.FAILED.name
-
-        return check
-
-
-    def check8(self,twin):
-        """This checks if (optional) attribute customerPartId in specificAssetIds is written correctly with camel case
+        if len(valid_key_found) > 0 and len(valid_key_correct) > 0:
+            result = Check.PASSED.name
+            info.append(valid_key_correct[0])
+        elif len(valid_key_found)>0 and len(valid_key_correct) < 1:
+            info.append(f"{id} does not fit to expected format current:")
+            info.append(valid_key_found[0])
+        elif len(valid_key_found)<1: 
+            info.append(f"{id} not found")
+            
+        return result,info
+    
+    def check_optional_Id_in_specificAssetId(self,twin, id):
+        """This checks if a ID exists in specificAssetIds and is written correctly with camel case
 
         :param twin: digital twin
         :type twin: dict
-        :return: test result object
-        :rtype: dict
+        :return: tuple check result, info
+        :rtype: tuple(string, string)
         """
 
-        valid_key = 'customerPartId'
-        check = { 'id':'check8', 'name':f'Check if (optional) attribute {valid_key} in specificAssetIds is written correctly with camel case'}
+        valid_key = id
+        result = Check.PASSED.name
+        info = ''
         shell = twin['shell']
         
-        valid_key_found = len([x for x in shell['specificAssetIds'] if x['key'].lower() == valid_key.lower()]) > 0
-        valid_key_correct = len([x for x in shell['specificAssetIds'] if x['key'].lower() == valid_key.lower() and x['key'] == valid_key]) > 0
-
-        if not valid_key_found or (valid_key_found and valid_key_correct):
-            check['result'] = Check.PASSED.name
-        else:
-            check['result'] = Check.FAILED.name
-
-        return check
-
-
-    def check9(self,twin):
-        """This checks if (optional) attribute batchId in specificAssetIds is written correctly with camel case
-
-        :param twin: digital twin
-        :type twin: dict
-        :return: test result object
-        :rtype: dict
-        """
-
-        valid_key = 'batchId'
-        check = { 'id':'check9', 'name':f'Check if (optional) attribute {valid_key} in specificAssetIds is written correctly with camel case'}
-        shell = twin['shell']
+        valid_key_found = [x for x in shell['specificAssetIds'] if x['key'].lower() == valid_key.lower()]
+        valid_key_correct = [x for x in shell['specificAssetIds'] if x['key'].lower() == valid_key.lower() and x['key'] == valid_key]
         
-        valid_key_found = len([x for x in shell['specificAssetIds'] if x['key'].lower() == valid_key.lower()]) > 0
-        valid_key_correct = len([x for x in shell['specificAssetIds'] if x['key'].lower() == valid_key.lower() and x['key'] == valid_key]) > 0
-
-        if not valid_key_found or (valid_key_found and valid_key_correct):
-            check['result'] = Check.PASSED.name
-        else:
-            check['result'] = Check.FAILED.name
-
-        return check
+        if len(valid_key_found) > 0 and len(valid_key_correct) > 0:
+            result = Check.PASSED.name
+        elif len(valid_key_found)>0 and len(valid_key_correct) < 1:
+            info = f"key does not fit to expected format: {id}"
+            result = Check.FAILED.name
+            
+        return result,info

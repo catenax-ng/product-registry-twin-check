@@ -51,16 +51,45 @@ class RegistryHandler:
         self._logging = logging.getLogger(__name__)
         self.kc_h = kc_h
 
+    def _globalAssetId(self,twin):
+        res = None
+        if 'globalAssetId' in twin:
+            if 'value' in twin['globalAssetId']:
+                if len(twin['globalAssetId']['value']) > 0:
+                    res = twin['globalAssetId']['value'][0]
+                else:
+                    res = twin['globalAssetId']['value']
+            else:
+                res = twin['globalAssetId']
+        else:
+            res = f"\"[{twin}]\""  
+                            
+        return res
+
+    def _transform_items(self,x):
+        res =  list(map(lambda x: {
+                    'aasId':  x['identification'],
+                    'status': GlobalParamters.Status.TWINLOADED.name,
+                    'shell': x,
+                    },x))
+        return res
+        
+        # globalAssetId": {
+        #         "value": [
+        #             "urn:uuid:0ece43f1-7bd0-11e1-b359-ecad00e4333"
+        #         ]
+        #     },
+
     def get_twin(self, aas_id):
         """Retrieves a twin for a specific aasId
 
-        :param aasId: Asset Administration Id from a 
+        :param aasId: Asset Administration Id from a
         :type aasId: string
         :return: twin
         :rtype: dict
         """
         try:
-            get_shell = f"registry/registry/shell-descriptors/{aas_id['urn']}"
+            get_shell = f"registry/registry/shell-descriptors/{aas_id['aasId']}"
             url = urljoin(GlobalParamters.CONF['registry_url'], get_shell)
             # self._logging.debug(f'url: {url}')
             self._logging.debug('url: %s', url)
@@ -76,8 +105,8 @@ class RegistryHandler:
 
             # self._logging.debug(f'Request status: {req}')
             # self._logging.debug(f'Request payload: {req.json()}')
-            self._logging.debug('Request status: %s',req)
-            self._logging.debug('Request payload: %s',req.json())
+            self._logging.debug('Request status: %s', req)
+            self._logging.debug('Request payload: %s', req.json())
 
         except exceptions.RequestException as exc:
             self._logging.error(exc)
@@ -94,7 +123,7 @@ class RegistryHandler:
         :rtype: list
         """
 
-        self._logging.info('Getting all Twins for BPN: %s',bpn)
+        self._logging.info('Getting all Twins for BPN: %s', bpn)
         twins = []
         load_twin_list = False
         file_name = f"{GlobalParamters.CONF['twins_pickle_pre_name']}_{bpn['value']}.pickle"
@@ -102,6 +131,8 @@ class RegistryHandler:
         manufacturerId = 'manufacturerId'
         if os.path.isfile(pickle_path):
             twins = fH.load_pickle(pickle_path, 'rb')
+            self._logging.info(' Twins loaded from file.')
+
             # len([twin for twin in twins if twin['bpn'] == bpn['value'] ])
             # if len([twin for twin in twins if twin['bpn'] == bpn['value'] ]) == 0:
             #     self._logging.info('No values found for %s', bpn['value'] )
@@ -112,15 +143,16 @@ class RegistryHandler:
             load_twin_list = True
 
         self._logging.info(
-            "load_twin_list: %s, pikle path: %s",load_twin_list, pickle_path)
+            "load_twin_list: %s, pikle path: %s", load_twin_list, pickle_path)
 
         if load_twin_list:
+            self._logging.info(' Fetch twins from registry.')
             try:
                 params = """assetIds=[{"key":\"""" + manufacturerId + """","value":\"""" + \
                     bpn['value']+""""}]"""
                 get_shells = "registry/lookup/shells"
                 url = urljoin(GlobalParamters.CONF['registry_url'], get_shells)
-                self._logging.debug('url: %s',url)
+                self._logging.debug('url: %s', url)
                 headers = {
                     'Authorization': f'Bearer {self.kc_h.get_token()}',
                     'Content-Type': 'application/x-www-form-urlencoded'
@@ -135,8 +167,8 @@ class RegistryHandler:
 
                 self._logging.debug('Request status: %s', req)
 
-                twins = list( map(lambda x: {
-                    'urn': x,
+                twins = list(map(lambda x: {
+                    'aasId': x,
                     'status': GlobalParamters.Status.NEW.name,
                     'shell': {},
                     'checkresult': [],
@@ -163,70 +195,68 @@ class RegistryHandler:
                     fH.write_pickle(pickle_path, twins)
         else:
             self._logging.warning(
-                'for %s %s no Twins exists in the Digital Twin Registry. Check if %s is in the correct format', 
+                'for %s %s no Twins exists in the Digital Twin Registry. Check if %s is in the correct format',
                 bpn['company'],
-                bpn['value'],manufacturerId)
-        
+                bpn['value'], manufacturerId)
+
         fH.write_pickle(pickle_path, twins)
         self._logging.info('')
         self._logging.info('safed %d twins to file', len(twins))
         self._logging.info('')
         self._logging.info('')
-        
+
         # twins = [twin.pop('bpn', None) for twin in twins]
         return twins
 
+    def _getPage(self,page=0,pageSize=20):
+        get_shells = f"/registry/registry/shell-descriptors/?page={page}&pageSize={pageSize}"
+        url = urljoin(GlobalParamters.CONF['registry_url'], get_shells)
+        self._logging.debug('url: %s', url)
+        headers = {
+            'Authorization': f'Bearer {self.kc_h.get_token()}',
+            'Content-Type': 'application/x-www-form-urlencoded'
+
+            }
+
+        if GlobalParamters.USE_PROXY is True:
+            req = get(url, headers=headers,
+                        proxies=GlobalParamters.CONF['proxies'])
+        else:
+            req = get(url,
+                        headers=headers, proxies=None)
+
+        self._logging.debug('Request status: %s', req)
+        
+        return req
 
     def get_all_twins(self):
-        self._logging.info('Getting all Twins from the registry Service')
+        self._logging.info('Getting all Twins')
         twins = []
         load_twin_list = False
-        
+
         file_name = f"all_twins.pickle"
         pickle_path = os.path.join(GlobalParamters.ROOT_DIR, file_name)
-        manufacturerId = 'manufacturerId'
+        
         if os.path.isfile(pickle_path):
             twins = fH.load_pickle(pickle_path, 'rb')
+            self._logging.info(' Twins loaded from file.')
         else:
             load_twin_list = True
-        
-        
+
         if load_twin_list:
+            self._logging.info(' Fetch twins from registry.')
             try:
-                get_shells = "registry/shell-descriptors"
-                url = urljoin(GlobalParamters.CONF['registry_url'], get_shells)
-                self._logging.debug('url: %s',url)
-                headers = {
-                    'Authorization': f'Bearer {self.kc_h.get_token()}',
-                    'Content-Type': 'application/x-www-form-urlencoded'
+                req = self._getPage().json()
+                twins = self._transform_items(req['items'])
 
-                }
-                if GlobalParamters.USE_PROXY is True:
-                    req = get(url, headers=headers,
-                              proxies=GlobalParamters.CONF['proxies'])
-                else:
-                    req = get(url,
-                              headers=headers, proxies=None)
+                for i in tqdm(range(1, req['totalPages'])):
+                    page = self._getPage(i).json()
+                    twins.extend(self._transform_items(page['items']))
 
-                self._logging.debug('Request status: %s', req)
-
-                # TODO: Pegenation
-                
-                req = req.json()
-                
-                for i in req['totalPages']:
-                    print(i)
-                
-                twins = list( map(lambda x: {
-                    'urn': x,
-                    'status': GlobalParamters.Status.NEW.name,
-                    'shell': {},
-                    'checkresult': []
-                    }, req.json()))
                 fH.write_pickle(pickle_path, twins)
 
             except exceptions.RequestException as exc:
                 self._logging.error(exc)
                 raise SystemExit() from exc
-        
+
         return twins

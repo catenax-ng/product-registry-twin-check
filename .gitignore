@@ -2,4 +2,5 @@
 *.pickle
 arc/
 settings.yaml
+settings_int.yaml
 *.pyc
