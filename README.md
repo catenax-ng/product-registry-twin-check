@@ -24,7 +24,8 @@
 * [ ] Maybe: Wrapping config in a class
 * [ ] Maybe: refactor config file
 * [ ] TODO: Add check against the testdatafile
-* [ ] TODO: Add check for different cases BomAsBuilt & BomAsPlanned
+* [ ] TODO: Add check for different cases BomAsBuilt & BomAsPlanned Twins
+* [ ] TODO: Get specification from Markus Keidl to specific Values and globalAssetIds
 
 ## Description
 
