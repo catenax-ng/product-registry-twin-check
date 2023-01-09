@@ -4,3 +4,4 @@ arc/
 settings.yaml
 settings_int.yaml
 *.pyc
+settings_beta.yaml
