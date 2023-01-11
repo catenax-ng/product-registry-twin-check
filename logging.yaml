@@ -10,5 +10,5 @@ handlers:
     formatter: colored
     stream: ext://sys.stdout
 root:
-  level: DEBUG
+  level: INFO
   handlers: [console]

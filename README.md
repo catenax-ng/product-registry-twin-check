@@ -32,19 +32,22 @@
 
 This repository holds a script to check Digital Twins within the Registry.
 
-Currently the script checks the following:
-
-* check1 - checks if the global AssetId is different to the aasID
-* check2 - checks if the semanticIDs are of a valid structure
-* check3 - checks if a manaufacturerId is specified in the specificAssetIds
-* check4 - checks if an ID has a valid URN:UUID Format
-
 ## Getting Started
 
-Add a valid *client_id* and *client_secret* to the configuration file and remove the "copy" from the filename so that its name is **settings.yaml**.
-Select or add a BPN to the list of BPN's and start the programm with **python main.py**
+1. Add a valid *client_id* and *client_secret* to the configuration file.
+2. Add a list of valid BPN's to the configuration file, if you want to check BPN specific Twins, or let it out to check the whole registry.
+3. Add a list of semanticId's you want to be checked.
+4. Change the variable SETTINGS_FILENAME to a settings filename of choice e.g. 'settings_beta.yaml'
+5. Start the programm e.g. **python main.py**
 
 ## Debugging
 
 If you need further information while running this programm set the option **Level** to **DEBUG** on the root level in the **logging.yaml** file.
 
+## Extracting SemanticId's from Testdata file
+
+On a linux based machine you can extract a list of semanticId's from the testdata file with the following snippet.
+
+```bash
+cat CX_Testdata_v1.4.1-AsPlanned.json | jq '."https://catenax.io/schema/TestDataContainer/1.0.0" | .[] | keys' | sort | uniq | grep urn
+```

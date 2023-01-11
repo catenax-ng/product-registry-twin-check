@@ -39,7 +39,7 @@ __maintainer__ = ""
 __email__ = ""
 __status__ = "exploration"
 
-SETTINGS_FILENAME = 'settings_int.yaml'
+SETTINGS_FILENAME = 'settings_beta.yaml'
 
 def write_bpn_twin_as_csv(twins, bpn_o):
     """this function writes the result in a human readable result to disk
@@ -61,7 +61,7 @@ def write_twins_as_csv(twins):
         del i['shell']
     
     df_twins = pd.DataFrame.from_dict(twins)
-    df_twins.to_csv(f"{GlobalParamters.CONF['check_output_filename']}_{datetime.datetime.now().strftime('%y%m%d')}.csv",
+    df_twins.to_csv(f"{GlobalParamters.CONF['check_output_filename']}_{datetime.datetime.now().strftime('%y%m%d_%H%M')}.csv",
                     index=False,
                     header=True)
 

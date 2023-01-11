@@ -9,7 +9,7 @@ token_pickle: 'token.pickle'
 force_reload: True
 semanticIds: 
 - 'urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization'
-- 'urn:bamm:io.catenax.assembly_part_relationship:1.1.0#AssemblyPartRelationship'
+- 'urn:bamm:io.catenax.assembly_part_relationship:1.1.#AssemblyPartRelationship'
 - 'urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling'
 - 'urn:bamm:io.catenax.certificate_of_destruction:1.0.0#CertificateOfDestruction'
 - 'urn:bamm:io.catenax.vehicle.product_description:1.0.1#ProductDescription'
