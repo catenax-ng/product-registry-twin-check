@@ -1,10 +1,9 @@
 *.csv
 *.pickle
+settings_pentest.yaml
 arc/
-settings.yaml
 settings_int.yaml
-*.pyc
 settings_beta.yaml
+*.pyc
 *.xlsx
-settings_int.yaml
-settings_int.yaml
+
