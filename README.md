@@ -27,6 +27,7 @@
 * [ ] TODO: Add check for different cases BomAsBuilt & BomAsPlanned Twins
 * [ ] TODO: Get specification from Markus Keidl to specific Values and globalAssetIds
 * [ ] TODO: Describe configuration of check tool
+* [ ] Maybe: Add config selection of environments
 
 ## Description
 
