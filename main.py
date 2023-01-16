@@ -15,6 +15,7 @@ import file_handler as fH
 from keycloack_handler_memory import KeycloackHandler
 import re
 from edc_check import EDCCheck
+import copy
 
 __author__ = "Johannes Zahn"
 __copyright__ = """
@@ -42,8 +43,8 @@ __email__ = ""
 __status__ = "exploration"
 
 # Setting filename must be of format settings_<environment>.yaml
-# SETTINGS_FILENAME = 'settings_beta.yaml'
-SETTINGS_FILENAME = 'settings_int.yaml'
+SETTINGS_FILENAME = 'settings_beta.yaml'
+# SETTINGS_FILENAME = 'settings_int.yaml'
 
 def write_bpn_twin_as_csv(twins, bpn_o):
     """this function writes the result in a human readable result to disk
@@ -53,23 +54,25 @@ def write_bpn_twin_as_csv(twins, bpn_o):
     :param bpn: bpn of the twins
     :type bpn: string
     """
-    for i in twins:
+    twins_c = copy.deepcopy(twins)
+    for i in twins_c:
         del i['shell']
         
     env = re.split(r'\.|_', SETTINGS_FILENAME )[1]
     
-    df_twins = pd.DataFrame.from_dict(twins)
+    df_twins = pd.DataFrame.from_dict(twins_c)
     df_twins.to_csv(f"{GlobalParamters.CONF['check_output_filename']}_{env}_{bpn_o['company']}_{bpn_o['value']}_{datetime.datetime.now().strftime('%y%m%d')}.csv",
                     index=False,
                     header=True)
 
 def write_twins_as_csv(twins):
-    for i in twins:
+    twins_c = copy.deepcopy(twins)
+    for i in twins_c:
         del i['shell']
     
     env = re.split(r'\.|_', SETTINGS_FILENAME )[1]
     
-    df_twins = pd.DataFrame.from_dict(twins)
+    df_twins = pd.DataFrame.from_dict(twins_c)
     df_twins.to_csv(f"{GlobalParamters.CONF['check_output_filename']}_{env}_{datetime.datetime.now().strftime('%y%m%d_%H%M')}.csv",
                     index=False,
                     header=True)

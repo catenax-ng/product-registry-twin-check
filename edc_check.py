@@ -38,10 +38,10 @@ __status__ = "exploration"
 
 #     # provider = 'http://beta-edc.westeurope.cloudapp.azure.com:8282'
 #     # edc_provider_url = 'https://connector.cx-casestudy.edc.aws.bmw.cloud/BPNL0000000004WK' # BMW
-#     edc_provider_url = 'http://catenax-beta-edc.westeurope.cloudapp.azure.com:8282'
+#     edc_provider_url = 'https://grisum-de.beta.cx.dih-cloud.com'
 #     url = f'https://irs-consumer-controlplane.beta.demo.catena-x.net/data/catalog?providerUrl={edc_provider_url}/api/v1/ids/data'
     
-#     req = requests.get(url,headers=headers)
+#     req = get(url,headers=headers)
     
 #     print(req.status_code)
 #     print(type(req.status_code))
@@ -51,15 +51,11 @@ __status__ = "exploration"
 #     if req.status_code == 500:
 #         print(req.content)
     
-#     # print(json.dumps(req.json(), indent=4))
+#     print(json.dumps(req.json(), indent=4))
 
 # except Exception as e: 
 #     print(e)
-            
-    
-    
-    
-    
+ 
 class EDCCheck ():
     """Class for all EDC Connector Check relevant topics
     """
@@ -78,7 +74,7 @@ class EDCCheck ():
                 
                 for endpoint in endpoints: 
                     endpointAddress = endpoint['protocolInformation']['endpointAddress']
-                    endpointAddress = endpointAddress.split('/urn:uuid')[0]
+                    endpointAddress = endpointAddress.split('/urn')[0]
                     
                     if endpointAddress not in endpointAddresses:
                         endpointAddresses.append(endpointAddress) 
@@ -99,8 +95,16 @@ class EDCCheck ():
     def check_all_edc_catalog_connectivity(self,shells):
         res = []
         addresses = self.get_edc_endpoint_adresses(shells)
+        
+        self._logger.info('.'*60)
+        self._logger.info('Start EDC Catalog Check.')
+        
         for i in tqdm(range(len(addresses))):
             res.append(self.get_edc_catalog(addresses[i]))
+        
+        for i in res:
+            self._logger.info(f"Status: {res[i]['response_code']}\t {res[i]['url']}")
+        
         return res
 
     def get_edc_catalog(self,edc_check_object):    

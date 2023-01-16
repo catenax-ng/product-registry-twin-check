@@ -17,6 +17,8 @@
 * [x] Refactor Checks and Checkclass
 * [x] manufactureId Logic is not tested correctly
 * [x] Add more information to resultset to identify an object
+* [x] Maybe: validate EDC Endpoints found. Make it nice Code
+* [x] TODO: Describe configuration of check tool
 
 </details>
 
@@ -25,10 +27,6 @@
 * [ ] Maybe: refactor config file
 * [ ] TODO: Add check against the testdatafile
 * [ ] TODO: Add check for different cases BomAsBuilt & BomAsPlanned Twins
-* [ ] TODO: Get specification from Markus Keidl to specific Values and globalAssetIds
-* [ ] TODO: Describe configuration of check tool
-* [x] Maybe: Add config selection of environments
-* [ ] Maybe: validate EDC Endpoints found. Make it nice Code
 
 ## Description
 
@@ -42,6 +40,41 @@ This repository holds a script to check Digital Twins within the Registry.
 4. Change the variable SETTINGS_FILENAME to a settings filename of choice e.g. 'settings_beta.yaml'
 5. Start the programm e.g. **python main.py**
 
+## Configuration
+
+```yaml
+version: 1
+client_id: ''                     # keycloack client id 
+client_secret: ''                 # keycloack secret
+keycloack_host: ''                # keycloack host
+keycloack_realm: ''               # keycloack realm path
+registry_url: ''                  # URL of registry service
+force_reload: True                # True force programm to reload twins from 
+                                  # registry and not use cache
+
+semanticIds:                      # list of semanticId's to be checked
+  - 'urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization'
+  - 'urn:bamm:io.catenax.assembly_part_relationship:1.1.#AssemblyPartRelationship'
+
+check_output_filename: 'DTRCheck' # output filename, this will be appended
+                                  # with date time and environment information
+
+bpn:                              # OPTIONAL: list of specific bpn values which 
+                                  # are beeing tested. If config is missing all 
+                                  # registry entries will be checked
+  - {'company':'A', 'name': 'Tier A','value':'BPNL0000000XXXXX'}
+  - {'company':'B', 'name': 'Sub Tier A','value':'BPNL0000000YYYYY'}
+
+proxies: { 'http':'', 'https':''} # proxy settings for get requests
+
+edc_catalog_check: True           # Should an EDC Catalog check of each participant
+                                  # in the Network be done.
+
+edc_consumer_control_plane: ''    # EDC consumer control plane url from which the 
+                                  # catalog shall be retrieved.
+
+```
+
 ## Debugging
 
 If you need further information while running this programm set the option **Level** to **DEBUG** on the root level in the **logging.yaml** file.
@@ -51,7 +84,9 @@ If you need further information while running this programm set the option **Lev
 On a linux based machine you can extract a list of semanticId's from the testdata file with the following snippet.
 
 ```bash
-cat CX_Testdata_v1.4.1-AsPlanned.json | jq '."https://catenax.io/schema/TestDataContainer/1.0.0" | .[] | keys' | sort | uniq | grep urn
+cat CX_Testdata_v1.4.1-AsPlanned.json | \
+ jq '."https://catenax.io/schema/TestDataContainer/1.0.0" | .[] | keys' | \
+ sort | uniq | grep urn
 ```
 
 ## Output File explained

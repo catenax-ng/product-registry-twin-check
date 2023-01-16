@@ -126,7 +126,7 @@ class RegistryHandler:
         self._logging.info('Getting all Twins for BPN: %s', bpn)
         twins = []
         load_twin_list = False
-        file_name = f"{GlobalParamters.CONF['twins_pickle_pre_name']}_{bpn['value']}.pickle"
+        file_name = f"twins_{bpn['value']}.pickle"
         pickle_path = os.path.join(GlobalParamters.ROOT_DIR, file_name)
         manufacturerId = 'manufacturerId'
         if os.path.isfile(pickle_path):

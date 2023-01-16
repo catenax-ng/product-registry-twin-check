@@ -4,8 +4,6 @@ client_secret: '' # keycloack secret
 keycloack_host: 'https://centralidp.int.demo.catena-x.net' # keycloack host
 keycloack_realm: '/auth/realms/CX-Central/protocol/openid-connect/token' # keycloack realm
 registry_url: 'https://semantics.int.demo.catena-x.net' # URL of registry service
-twins_pickle_pre_name: 'twins' #ä TODO: Check the usage
-token_pickle: 'token.pickle' # Check the usage
 force_reload: True # True force programm to reload twins from registry and not use cache
 semanticIds:  # list of semanticId's to be checked
 - 'urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization'

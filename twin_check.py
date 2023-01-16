@@ -57,7 +57,7 @@ class TwinCheck:
         """
         self._logger.info('.'*60)
         self._logger.info('Start Twin Checkup')
-        self._logger.debug('is checking %d twins', len(twins))
+        self._logger.info('is checking %d twins', len(twins))
         for i in tqdm(range(len(twins))):
             if 'status' not in twins[i] or twins[i]['status'] == GlobalParamters.Status.TWINLOADED.name:
                 
@@ -71,7 +71,7 @@ class TwinCheck:
                 twins[i]['bpn'],twins[i]['bpn schema'] = self.extract_bpn(twins[i])
                 
                 # TODO: partInstanceId only when twin is part as Built (serialparttypization or batch)
-                twins[i]['partInstanceId in specificAssetIds'],twins[i]['partInstanceId in specificAssetIds info'] = self.check_Id_in_specificAssetId(twins[i],'partInstanceId')
+                twins[i]['partInstanceId in specificAssetIds'],twins[i]['partInstanceId in specificAssetIds info'] = self.check_optional_Id_in_specificAssetId(twins[i],'partInstanceId')
                 twins[i]['manufacturerPartId in specificAssetIds'],twins[i]['manufacturerPartId in specificAssetIds info'] = self.check_Id_in_specificAssetId(twins[i],'manufacturerPartId')
                 
                 twins[i]['optional customerPartId in specificAssetIds'],twins[i]['optional customerPartId in specificAssetIds info'] = self.check_optional_Id_in_specificAssetId(twins[i],'customerPartId')
@@ -249,7 +249,7 @@ class TwinCheck:
         """
 
         valid_key = id
-        result = Check.PASSED.name
+        result = ''
         info = ''
         shell = twin['shell']
         
@@ -261,5 +261,8 @@ class TwinCheck:
         elif len(valid_key_found)>0 and len(valid_key_correct) < 1:
             info = f"key does not fit to expected format: {id}"
             result = Check.FAILED.name
+        elif len(valid_key_found)<1: 
+            info = (f"{id} not found")
+            result = ''
             
         return result,info
