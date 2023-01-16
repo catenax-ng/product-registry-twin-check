@@ -35,7 +35,7 @@ LOGGER_CONF = {}
 FORCE_RELOAD:bool = False
 USE_PROXY:bool = False
 MULTIPLE_BPNS:bool = False
-
+EDC_CATALOG_CHECK:bool = False
 class Status(Enum):
     """ Class for all enum values which are the states a twin can reach
     """
@@ -85,3 +85,7 @@ def set_logger_conf(conf):
     """
     global LOGGER_CONF
     LOGGER_CONF = conf
+    
+def set_edc_catalog_check(edc_catalog_check:bool):
+    global EDC_CATALOG_CHECK
+    EDC_CATALOG_CHECK = edc_catalog_check

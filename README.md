@@ -27,7 +27,8 @@
 * [ ] TODO: Add check for different cases BomAsBuilt & BomAsPlanned Twins
 * [ ] TODO: Get specification from Markus Keidl to specific Values and globalAssetIds
 * [ ] TODO: Describe configuration of check tool
-* [ ] Maybe: Add config selection of environments
+* [x] Maybe: Add config selection of environments
+* [ ] Maybe: validate EDC Endpoints found. Make it nice Code
 
 ## Description
 
@@ -52,3 +53,29 @@ On a linux based machine you can extract a list of semanticId's from the testdat
 ```bash
 cat CX_Testdata_v1.4.1-AsPlanned.json | jq '."https://catenax.io/schema/TestDataContainer/1.0.0" | .[] | keys' | sort | uniq | grep urn
 ```
+
+## Output File explained
+
+| column name | column description |
+|----|----|
+| aasid | aasId of twin to identify object |
+| status | Python program check (only for internal purposes) |
+| aas uuid:urn format| Checks if aasId complies to the uuid:urn format |
+| globalAssetId exists | Checks if the key globalAssetId exists |
+| globalAssetId uuid:urn format | Checks if globalAssetId complies to the uuid:urn format |
+| aasId!=globalAssetId | Checks if globalAssetId and aasId are different values |
+| valid semanticIds | Checks if the semanticIds match the list you see above |
+| valid semanticIds info | List of semanticIds which do not comply to the list you see above |
+| manufacturerId in specificAssetIds| checks if manufacturerId key exists in specificAssetId |
+| manufacturerId in specificAssetIds info| output of manufacturerId |
+| bpn | BPN |
+| bpn schema | checks if bpn matches the bpn schema |
+| partInstanceId in specificAssetIds | checks if partInstanceId key exists in specificAssetId |
+| partInstanceId in specificAssetIds info | output of partInstanceId |
+| manufacturerPartId in specificAssetIds | checks if manufacturerPartId key exists in specificAssetId |
+| manufacturerPartId in specificAssetIds info | output of manufacturerPartId |
+| optional customerPartId in specificAssetIds | optional topics can be skipped for now |
+| optional customerPartId in specificAssetIds info| |  
+| optional batchId in specificAssetIds| |
+| optional batchId in specificAssetIds info| |
+| check | Final Result is PASSED when no FAILED exists in one row |

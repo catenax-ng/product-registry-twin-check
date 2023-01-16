@@ -1,13 +1,13 @@
 version: 1
-client_id: ''
-client_secret: ''
-keycloack_host: 'https://centralidp.int.demo.catena-x.net'
-keycloack_realm: '/auth/realms/CX-Central/protocol/openid-connect/token'
-registry_url: 'https://semantics.int.demo.catena-x.net'
-twins_pickle_pre_name: 'twins'
-token_pickle: 'token.pickle'
-force_reload: True
-semanticIds: 
+client_id: '' # keycloack client id 
+client_secret: '' # keycloack secret
+keycloack_host: 'https://centralidp.int.demo.catena-x.net' # keycloack host
+keycloack_realm: '/auth/realms/CX-Central/protocol/openid-connect/token' # keycloack realm
+registry_url: 'https://semantics.int.demo.catena-x.net' # URL of registry service
+twins_pickle_pre_name: 'twins' #ä TODO: Check the usage
+token_pickle: 'token.pickle' # Check the usage
+force_reload: True # True force programm to reload twins from registry and not use cache
+semanticIds:  # list of semanticId's to be checked
 - 'urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization'
 - 'urn:bamm:io.catenax.assembly_part_relationship:1.1.#AssemblyPartRelationship'
 - 'urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling'
@@ -17,16 +17,10 @@ semanticIds:
 - 'urn:bamm:io.catenax.return_request:1.0.0#ReturnRequest'
 - 'urn:bamm:io.catenax.physical_dimension:1.0.0#PhysicalDimension'
 - 'urn:bamm:io.catenax.batch:1.0.0#Batch'
-check_output_filename: 'DTRCheck'
-bpn: 
-#  - {'company':'ZF', 'name': 'Tier A','value':'BPNL00000003B2OM'}
-#  - {'company':'ZF', 'name': 'Sub Tier A','value':'BPNL00000003B3NX'}
-#  - {'company':'BMW', 'name': 'OEM A','value':'BPNL00000003AYRE'}
-#  - {'company':'Benz', 'name': 'OEM B','value':'BPNL00000003AVTH'}
-#  - {'company':'SAP', 'name': 'OEM C','value':'BPNL00000003AZQP'}
-#  - {'company':'BOSCH', 'name': 'Tier B','value':'BPNL00000003B5MJ'}
-#  - {'company':'BASF', 'name': 'N-Tier A','value':'BPNL00000003B0Q0'}
-#  - {'company':'HENKEL', 'name': 'Sub Tier B','value':'BPNL00000003AXS3'}
-#  - {'company':'GEC', 'name': 'Tier C','value':'BPNL00000003CSGV'}
-#  - {'company':'Siemens', 'name': 'Sub Tier C','value':'BPNL00000000BJTL'}
-proxies: { 'http':'', 'https':''}
+check_output_filename: 'DTRCheck' # output filename, this will be appended with date time and environment information
+bpn: # optional: list of specific bpn values which are beeing tested. If config is missing whole registry entries will be checked
+#  - {'company':'A', 'name': 'Tier A','value':'BPNL0000000XXXXX'}
+#  - {'company':'B', 'name': 'Sub Tier A','value':'BPNL0000000YYYYY'}
+proxies: { 'http':'', 'https':''} # proxy settings for get requests
+edc_catalog_check: True # Should an EDC Catalog check of each participant in the Network be done
+edc_consumer_control_plane: '' # EDC consumer control plane url from which the catalog shall be retrieved

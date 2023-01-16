@@ -13,6 +13,8 @@ from registry_handler import RegistryHandler
 from twin_check import TwinCheck
 import file_handler as fH
 from keycloack_handler_memory import KeycloackHandler
+import re
+from edc_check import EDCCheck
 
 __author__ = "Johannes Zahn"
 __copyright__ = """
@@ -39,6 +41,7 @@ __maintainer__ = ""
 __email__ = ""
 __status__ = "exploration"
 
+# Setting filename must be of format settings_<environment>.yaml
 # SETTINGS_FILENAME = 'settings_beta.yaml'
 SETTINGS_FILENAME = 'settings_int.yaml'
 
@@ -52,8 +55,11 @@ def write_bpn_twin_as_csv(twins, bpn_o):
     """
     for i in twins:
         del i['shell']
+        
+    env = re.split(r'\.|_', SETTINGS_FILENAME )[1]
+    
     df_twins = pd.DataFrame.from_dict(twins)
-    df_twins.to_csv(f"{GlobalParamters.CONF['check_output_filename']}_{bpn_o['company']}_{bpn_o['value']}_{datetime.datetime.now().strftime('%y%m%d')}.csv",
+    df_twins.to_csv(f"{GlobalParamters.CONF['check_output_filename']}_{env}_{bpn_o['company']}_{bpn_o['value']}_{datetime.datetime.now().strftime('%y%m%d')}.csv",
                     index=False,
                     header=True)
 
@@ -61,8 +67,18 @@ def write_twins_as_csv(twins):
     for i in twins:
         del i['shell']
     
+    env = re.split(r'\.|_', SETTINGS_FILENAME )[1]
+    
     df_twins = pd.DataFrame.from_dict(twins)
-    df_twins.to_csv(f"{GlobalParamters.CONF['check_output_filename']}_{datetime.datetime.now().strftime('%y%m%d_%H%M')}.csv",
+    df_twins.to_csv(f"{GlobalParamters.CONF['check_output_filename']}_{env}_{datetime.datetime.now().strftime('%y%m%d_%H%M')}.csv",
+                    index=False,
+                    header=True)
+
+def write_edc_check_as_csv(edc_check):
+    env = re.split(r'\.|_', SETTINGS_FILENAME )[1]
+
+    df_edc_check = pd.DataFrame.from_dict(edc_check)
+    df_edc_check.to_csv(f"EDCCatalogCheck_{env}_{datetime.datetime.now().strftime('%y%m%d_%H%M')}.csv",
                     index=False,
                     header=True)
 
@@ -126,7 +142,16 @@ if __name__ == '__main__':
     else:
         _logging.error('no semanticIds to validate against it are available')
         SystemError(0)
+
+    
+    if 'edc_catalog_check' in GlobalParamters.CONF:
+        GlobalParamters.set_edc_catalog_check(True)
         
+        if 'edc_consumer_control_plane' not in GlobalParamters.CONF:
+            _logging.error('edc_consumer_control_plane is missing')
+        
+    _logging.info('   edc_catalog_check\t\t\t%s',GlobalParamters.CONF['edc_catalog_check'])
+    
     _logging.info('-' * 60)
 
     # Application start
@@ -150,5 +175,9 @@ if __name__ == '__main__':
         tC = TwinCheck()
         shells = tC.check_twins(shells)
         write_twins_as_csv(shells) 
-        
     
+ 
+    if GlobalParamters.EDC_CATALOG_CHECK is True: 
+        ec = EDCCheck()
+        edc_res = ec.check_all_edc_catalog_connectivity(shells)
+        write_edc_check_as_csv(edc_res)
