@@ -72,7 +72,8 @@ edc_catalog_check: True           # Should an EDC Catalog check of each particip
 
 edc_consumer_control_plane: ''    # EDC consumer control plane url from which the 
                                   # catalog shall be retrieved.
-
+edc_catalog_check: True # Should an EDC Catalog check of each participant in the Network be done
+edc_consumer_control_plane: '' # EDC consumer control plane url from which the catalog shall be retrieved
 ```
 
 ## Debugging
@@ -93,24 +94,24 @@ cat CX_Testdata_v1.4.1-AsPlanned.json | \
 
 | column name | column description |
 |----|----|
-| aasid | aasId of twin to identify object |
-| status | Python program check (only for internal purposes) |
-| aas uuid:urn format| Checks if aasId complies to the uuid:urn format |
-| globalAssetId exists | Checks if the key globalAssetId exists |
-| globalAssetId uuid:urn format | Checks if globalAssetId complies to the uuid:urn format |
-| aasId!=globalAssetId | Checks if globalAssetId and aasId are different values |
-| valid semanticIds | Checks if the semanticIds match the list you see above |
-| valid semanticIds info | List of semanticIds which do not comply to the list you see above |
-| manufacturerId in specificAssetIds| checks if manufacturerId key exists in specificAssetId |
-| manufacturerId in specificAssetIds info| output of manufacturerId |
-| bpn | BPN |
-| bpn schema | checks if bpn matches the bpn schema |
-| partInstanceId in specificAssetIds | checks if partInstanceId key exists in specificAssetId |
-| partInstanceId in specificAssetIds info | output of partInstanceId |
-| manufacturerPartId in specificAssetIds | checks if manufacturerPartId key exists in specificAssetId |
-| manufacturerPartId in specificAssetIds info | output of manufacturerPartId |
-| optional customerPartId in specificAssetIds | optional topics can be skipped for now |
-| optional customerPartId in specificAssetIds info| |  
-| optional batchId in specificAssetIds| |
-| optional batchId in specificAssetIds info| |
-| check | Final Result is PASSED when no FAILED exists in one row |
+| **aasid** | aasId of twin to identify object |
+| **status** | Python program check (only for internal purposes) |
+| **aas uuid:urn format**| Checks if aasId complies to the uuid:urn format |
+| **globalAssetId exists** | Checks if the key globalAssetId exists |
+| **globalAssetId uuid:urn format** | Checks if globalAssetId complies to the uuid:urn format |
+| **aasId!=globalAssetId** | Checks if globalAssetId and aasId are different values |
+| **valid semanticIds** | Checks if the semanticIds match the list you see above |
+| **valid semanticIds info** | List of semanticIds which do not comply to the list you see above |
+| **manufacturerId in specificAssetIds**| checks if manufacturerId key exists in specificAssetId |
+| **manufacturerId in specificAssetIds info**| output of manufacturerId |
+| **bpn** | BPN |
+| **bpn schema** | checks if bpn matches the bpn schema |
+| **optional partInstanceId in specificAssetIds** | checks if partInstanceId key exists in specificAssetId |
+| **optioinal partInstanceId in specificAssetIds info** | output of partInstanceId |
+| **manufacturerPartId in specificAssetIds** | checks if manufacturerPartId key exists in specificAssetId |
+| **manufacturerPartId in specificAssetIds info** | output of manufacturerPartId |
+| **optional customerPartId in specificAssetIds** | optional topics can be skipped for now |
+| **optional customerPartId in specificAssetIds info**| optional info to customerPartId|  
+| **optional batchId in specificAssetIds**| optional check for batchId |
+| **optional batchId in specificAssetIds info**| optional info to batchId check |
+| **check** | Final Result is PASSED when no FAILED exists in one row |

@@ -71,7 +71,7 @@ class TwinCheck:
                 twins[i]['bpn'],twins[i]['bpn schema'] = self.extract_bpn(twins[i])
                 
                 # TODO: partInstanceId only when twin is part as Built (serialparttypization or batch)
-                twins[i]['partInstanceId in specificAssetIds'],twins[i]['partInstanceId in specificAssetIds info'] = self.check_optional_Id_in_specificAssetId(twins[i],'partInstanceId')
+                twins[i]['optional partInstanceId in specificAssetIds'],twins[i]['optional partInstanceId in specificAssetIds info'] = self.check_optional_Id_in_specificAssetId(twins[i],'partInstanceId')
                 twins[i]['manufacturerPartId in specificAssetIds'],twins[i]['manufacturerPartId in specificAssetIds info'] = self.check_Id_in_specificAssetId(twins[i],'manufacturerPartId')
                 
                 twins[i]['optional customerPartId in specificAssetIds'],twins[i]['optional customerPartId in specificAssetIds info'] = self.check_optional_Id_in_specificAssetId(twins[i],'customerPartId')
