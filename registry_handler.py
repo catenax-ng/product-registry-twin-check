@@ -103,8 +103,6 @@ class RegistryHandler:
             else:
                 req = get(url, headers=headers)
 
-            # self._logging.debug(f'Request status: {req}')
-            # self._logging.debug(f'Request payload: {req.json()}')
             self._logging.debug('Request status: %s', req)
             self._logging.debug('Request payload: %s', req.json())
 

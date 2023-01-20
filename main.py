@@ -43,8 +43,8 @@ __email__ = ""
 __status__ = "exploration"
 
 # Setting filename must be of format settings_<environment>.yaml
-SETTINGS_FILENAME = 'settings_beta.yaml'
-# SETTINGS_FILENAME = 'settings_int.yaml'
+# SETTINGS_FILENAME = 'settings_beta.yaml'
+SETTINGS_FILENAME = 'settings_int.yaml'
 
 def write_bpn_twin_as_csv(twins, bpn_o):
     """this function writes the result in a human readable result to disk

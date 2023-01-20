@@ -30,31 +30,6 @@ __maintainer__ = ""
 __email__ = ""
 __status__ = "exploration"
 
-## Example Code
-# try:
-#     headers = {
-#                     'x-api-key': '123456'
-#                 }
-
-#     # provider = 'http://beta-edc.westeurope.cloudapp.azure.com:8282'
-#     # edc_provider_url = 'https://connector.cx-casestudy.edc.aws.bmw.cloud/BPNL0000000004WK' # BMW
-#     edc_provider_url = 'https://grisum-de.beta.cx.dih-cloud.com'
-#     url = f'https://irs-consumer-controlplane.beta.demo.catena-x.net/data/catalog?providerUrl={edc_provider_url}/api/v1/ids/data'
-    
-#     req = get(url,headers=headers)
-    
-#     print(req.status_code)
-#     print(type(req.status_code))
-#     if req.status_code == 200:
-#         print('success')
-    
-#     if req.status_code == 500:
-#         print(req.content)
-    
-#     print(json.dumps(req.json(), indent=4))
-
-# except Exception as e: 
-#     print(e)
  
 class EDCCheck ():
     """Class for all EDC Connector Check relevant topics
