@@ -26,7 +26,7 @@
 * [ ] Maybe: Wrapping config in a class
 * [ ] Maybe: refactor config file
 * [ ] TODO: Add check against the testdatafile
-* [ ] TODO: Add check for different cases BomAsBuilt & BomAsPlanned Twins
+* [ ] TODO: Add check for different cases BomAsBuilt (Batch, SerialPartTypization) & BomAsPlanned Twins
 
 ## Description
 

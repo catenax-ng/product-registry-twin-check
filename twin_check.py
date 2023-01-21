@@ -67,15 +67,46 @@ class TwinCheck:
                 twins[i]['aasId!=globalAssetId'] = self.check_aasId_not_globalAssetId(twins[i])
                 
                 twins[i]['valid semanticIds'], twins[i]['valid semanticIds info'] = self.check_valid_semanicIds(twins[i])
-                twins[i]['manufacturerId in specificAssetIds'],twins[i]['manufacturerId in specificAssetIds info'] = self.check_Id_in_specificAssetId(twins[i],'manufacturerId')
-                twins[i]['bpn'],twins[i]['bpn schema'] = self.extract_bpn(twins[i])
+                
+                
+                # twins[i]['manufacturerId in specificAssetIds'],twins[i]['manufacturerId in specificAssetIds info'] = self.check_Id_in_specificAssetId(twins[i],'manufacturerId')
+                # twins[i]['bpn'],twins[i]['bpn schema'] = self.extract_bpn(twins[i])
+                
+                
+                # 1. filter Array nach semanticId's with key linkedSpecificAssetIds                 
+                for ids in GlobalParamters.CONF['semanticIds']:
+                    semantic_id = ids['semanticId']
+                    if 'linkedSpecificAssetIds' in ids: 
+                        for linked_specific_assetId in ids['linkedSpecificAssetIds']:
+                            
+                            specific_asset_id = linked_specific_assetId['specificAssetId']
+                            check_level = linked_specific_assetId['checkLevel']
+                            
+                            check_column_name = ''
+                            check_info_column_name = ''
+                            if check_level == 'optional':
+                                check_column_name = f'optional {specific_asset_id} in specificAssetIds'
+                                check_info_column_name = f'optional {specific_asset_id} in specificAssetIds info'
+                                twins[i][check_column_name], twins[i][check_info_column_name] = self.check_optional_Id_in_specificAssetId(twins[i],specific_asset_id)
+                                
+                            else:
+                                check_column_name = f'{specific_asset_id} in specificAssetIds'
+                                check_info_column_name = f'{specific_asset_id} in specificAssetIds info'
+                                twins[i][check_column_name], twins[i][check_info_column_name] = self.check_Id_in_specificAssetId(twins[i],specific_asset_id)
+                        
+                        if specific_asset_id == 'manufacturerId':
+                            twins[i]['bpn'],twins[i]['bpn schema'] = self.extract_bpn(twins[i])
+                                                           
+                
+                # 2. run check for all Id's
+                # 3. add columns for all found ID's to result
                 
                 # TODO: partInstanceId only when twin is part as Built (serialparttypization or batch)
-                twins[i]['optional partInstanceId in specificAssetIds'],twins[i]['optional partInstanceId in specificAssetIds info'] = self.check_optional_Id_in_specificAssetId(twins[i],'partInstanceId')
-                twins[i]['manufacturerPartId in specificAssetIds'],twins[i]['manufacturerPartId in specificAssetIds info'] = self.check_Id_in_specificAssetId(twins[i],'manufacturerPartId')
+                # twins[i]['optional partInstanceId in specificAssetIds'],twins[i]['optional partInstanceId in specificAssetIds info'] = self.check_optional_Id_in_specificAssetId(twins[i],'partInstanceId')
+                # twins[i]['manufacturerPartId in specificAssetIds'],twins[i]['manufacturerPartId in specificAssetIds info'] = self.check_Id_in_specificAssetId(twins[i],'manufacturerPartId')
                 
-                twins[i]['optional customerPartId in specificAssetIds'],twins[i]['optional customerPartId in specificAssetIds info'] = self.check_optional_Id_in_specificAssetId(twins[i],'customerPartId')
-                twins[i]['optional batchId in specificAssetIds'],twins[i]['optional batchId in specificAssetIds info'] = self.check_optional_Id_in_specificAssetId(twins[i],'batchId')
+                # twins[i]['optional customerPartId in specificAssetIds'],twins[i]['optional customerPartId in specificAssetIds info'] = self.check_optional_Id_in_specificAssetId(twins[i],'customerPartId')
+                # twins[i]['optional batchId in specificAssetIds'],twins[i]['optional batchId in specificAssetIds info'] = self.check_optional_Id_in_specificAssetId(twins[i],'batchId')
                             
                 twins[i]['check'] = Check.PASSED.name
                 if Check.FAILED.name in twins[i].values():
@@ -175,7 +206,8 @@ class TwinCheck:
         result = Check.PASSED.name
         shell = twin['shell']
 
-        semantic_ids = GlobalParamters.CONF['semanticIds']
+        semantic_ids = list(map(lambda x: x['semanticId'],GlobalParamters.CONF['semanticIds']))
+        
         info = []
         
         for i in range(len(shell['submodelDescriptors'])):

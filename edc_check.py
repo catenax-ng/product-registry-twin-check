@@ -69,6 +69,7 @@ class EDCCheck ():
         
     def check_all_edc_catalog_connectivity(self,shells):
         res = []
+
         addresses = self.get_edc_endpoint_adresses(shells)
         
         self._logger.info('.'*60)
@@ -78,7 +79,8 @@ class EDCCheck ():
             res.append(self.get_edc_catalog(addresses[i]))
         
         for i in res:
-            self._logger.info(f"Status: {res[i]['response_code']}\t {res[i]['url']}")
+            self._logger.info(f"Status: {i['response_code']}\t {i['url']}")
+            
         
         return res
 
@@ -86,8 +88,8 @@ class EDCCheck ():
         try:
             headers = {'x-api-key': '123456'}
             
-            url = f"{GlobalParameters.CONF['edc_consumer_control_plane']}/data/catalog?providerUrl={edc_check_object['url']}/api/v1/ids/data"    
-                        
+            url = f"{GlobalParameters.CONF['edc_consumer_control_plane']}/data/catalog?providerUrl={edc_check_object['url']}/api/v1/ids/data"  
+                          
             if GlobalParameters.USE_PROXY is True:
                 req = get(url, headers=headers,
                           proxies=GlobalParameters.CONF['proxies'])
@@ -100,5 +102,5 @@ class EDCCheck ():
             return edc_check_object
 
         except Exception as e: 
-            print(e)
+            self._logger.error(e)
         pass
