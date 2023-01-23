@@ -42,38 +42,35 @@ This repository holds a script to check Digital Twins within the Registry.
 
 ## Configuration
 
+This description is built with example values, to give guidance which kind of information is necessary
+
 ```yaml
 version: 1
-client_id: ''                     # keycloack client id 
-client_secret: ''                 # keycloack secret
-keycloack_host: ''                # keycloack host
-keycloack_realm: ''               # keycloack realm path
-registry_url: ''                  # URL of registry service
-force_reload: True                # True force programm to reload twins from 
-                                  # registry and not use cache
-
-semanticIds:                      # list of semanticId's to be checked
-  - 'urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization'
-  - 'urn:bamm:io.catenax.assembly_part_relationship:1.1.#AssemblyPartRelationship'
-
-check_output_filename: 'DTRCheck' # output filename, this will be appended
-                                  # with date time and environment information
-
-bpn:                              # OPTIONAL: list of specific bpn values which 
-                                  # are beeing tested. If config is missing all 
-                                  # registry entries will be checked
-  - {'company':'A', 'name': 'Tier A','value':'BPNL0000000XXXXX'}
-  - {'company':'B', 'name': 'Sub Tier A','value':'BPNL0000000YYYYY'}
-
-proxies: { 'http':'', 'https':''} # proxy settings for get requests
-
-edc_catalog_check: True           # Should an EDC Catalog check of each participant
-                                  # in the Network be done.
-
-edc_consumer_control_plane: ''    # EDC consumer control plane url from which the 
-                                  # catalog shall be retrieved.
-edc_catalog_check: True # Should an EDC Catalog check of each participant in the Network be done
-edc_consumer_control_plane: '' # EDC consumer control plane url from which the catalog shall be retrieved
+client_id: s34                         # keycloack client id 
+client_secret: aöklsdjföalksdjfölkasdj # keycloack secret
+keycloack_host: https://centralidp.int.demo.catena-x.net # keycloack host
+keycloack_realm: /auth/realms/CX-Central/protocol/openid-connect/token # keycloack realm
+registry_url: https://semantics.int.demo.catena-x.net # URL of registry service
+force_reload: True                     # True force programm to reload twins from registry and not use cache
+semanticIds:                           # list of semanticId's to be checked
+- semanticId: djasdfj
+  linkedSpecificAssetIds:
+    - specificAssetId: manufacturerId
+      checkLevel: mandatory 
+    - specificAssetId: manufacturerPartId
+      checkLevel: optional
+check_output_filename: DTRCheck       # output filename, this will be appended with 
+                                      # date time and environment information
+bpn:                                  # optional: list of specific bpn values which are beeing tested.
+                                      # If config is missing whole registry entries will be checked
+  - company: A
+    name: Tier A
+    value: BPNL0000000XXXXX
+proxies:                              # proxy settings for get requests
+  http: 
+  https: 
+edc_catalog_check: True               # Should an EDC Catalog check of each participant in the Network be done
+edc_consumer_control_plane:           # EDC consumer control plane url from which the catalog shall be retrieved
 ```
 
 ## Debugging
