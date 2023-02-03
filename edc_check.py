@@ -81,7 +81,6 @@ class EDCCheck ():
         for i in res:
             self._logger.info(f"Status: {i['response_code']}\t {i['url']}")
             
-        
         return res
 
     def get_edc_catalog(self,edc_check_object):    

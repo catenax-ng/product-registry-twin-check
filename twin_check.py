@@ -324,7 +324,7 @@ class TwinCheck:
             info = f"key does not fit to expected format: {id}"
             result = Check.FAILED.name
         elif len(valid_key_found) < 1:
-            info = (f"{id} not found")
+            info = ''
             result = ''
 
         return result, info
