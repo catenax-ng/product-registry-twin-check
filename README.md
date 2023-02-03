@@ -18,15 +18,18 @@
 * [x] manufactureId Logic is not tested correctly
 * [x] Add more information to resultset to identify an object
 * [x] Maybe: validate EDC Endpoints found. Make it nice Code
-* [x] TODO: Describe configuration of check tool
+* [x] Describe configuration of check tool
+* [x] Add check for different cases BomAsBuilt (Batch, SerialPartTypization) & BomAsPlanned Twins
+* [x] Add check against the testdatafile
+* [x] Add compare to testfiles
 
 </details>
 
 * [ ] Maybe: Write tests for checks(dont know how yet)
 * [ ] Maybe: Wrapping config in a class
 * [ ] Maybe: refactor config file
-* [ ] TODO: Add check against the testdatafile
-* [ ] TODO: Add check for different cases BomAsBuilt (Batch, SerialPartTypization) & BomAsPlanned Twins
+* [ ] TODO: Identify duplicates
+* [ ] TODO: Check if globalAssetId's are missing in registry with expected globalAssetIds
 
 ## Description
 
@@ -53,7 +56,7 @@ keycloack_realm: /auth/realms/CX-Central/protocol/openid-connect/token # keycloa
 registry_url: https://semantics.int.demo.catena-x.net # URL of registry service
 force_reload: True                     # True force programm to reload twins from registry and not use cache
 semanticIds:                           # list of semanticId's to be checked
-- semanticId: djasdfj
+- semanticId: urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization
   linkedSpecificAssetIds:
     - specificAssetId: manufacturerId
       checkLevel: mandatory 
@@ -71,6 +74,7 @@ proxies:                              # proxy settings for get requests
   https: 
 edc_catalog_check: True               # Should an EDC Catalog check of each participant in the Network be done
 edc_consumer_control_plane:           # EDC consumer control plane url from which the catalog shall be retrieved
+test_data_dir: testdata               # directory where to place all testdata files to check content against
 ```
 
 ## Debugging
@@ -96,6 +100,7 @@ cat CX_Testdata_v1.4.1-AsPlanned.json | \
 | **aas uuid:urn format**| Checks if aasId complies to the uuid:urn format |
 | **globalAssetId exists** | Checks if the key globalAssetId exists |
 | **globalAssetId uuid:urn format** | Checks if globalAssetId complies to the uuid:urn format |
+| **unique globalAssetId** | Checks if the globalAssetId has been registered twice |
 | **aasId!=globalAssetId** | Checks if globalAssetId and aasId are different values |
 | **valid semanticIds** | Checks if the semanticIds match the list you see above |
 | **valid semanticIds info** | List of semanticIds which do not comply to the list you see above |
@@ -103,12 +108,18 @@ cat CX_Testdata_v1.4.1-AsPlanned.json | \
 | **manufacturerId in specificAssetIds info**| output of manufacturerId |
 | **bpn** | BPN |
 | **bpn schema** | checks if bpn matches the bpn schema |
-| **optional partInstanceId in specificAssetIds** | checks if partInstanceId key exists in specificAssetId |
-| **optioinal partInstanceId in specificAssetIds info** | output of partInstanceId |
+| **partInstanceId in specificAssetIds** | checks if partInstanceId key exists in specificAssetId |
+| **partInstanceId in specificAssetIds info** | output of partInstanceId |
 | **manufacturerPartId in specificAssetIds** | checks if manufacturerPartId key exists in specificAssetId |
 | **manufacturerPartId in specificAssetIds info** | output of manufacturerPartId |
 | **optional customerPartId in specificAssetIds** | optional topics can be skipped for now |
 | **optional customerPartId in specificAssetIds info**| optional info to customerPartId|  
+| **optional assetLifecyclePhase in specificAssetIds**| optinal checks if assetLifecyclePhase key exists in specificAssetId|
+| **optional assetLifecyclePhase in specificAssetIds info**|optional info to specificAssetId|
 | **optional batchId in specificAssetIds**| optional check for batchId |
 | **optional batchId in specificAssetIds info**| optional info to batchId check |
+| **optional van in specificAssetIds**|optinal checks if van key exists in specificAssetId|
+| **optional van in specificAssetIds info**|optional info to van|
+| **twin bpn matches to expected bpn**|checks if BPN matches to BPN Values of the test data files|
+| **twin globalAssetId matches to expected globalAssetId**|checks if globalAssetId matches to the globalAssetId's of the test data files|
 | **check** | Final Result is PASSED when no FAILED exists in one row |

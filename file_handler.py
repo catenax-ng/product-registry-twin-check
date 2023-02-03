@@ -8,6 +8,9 @@ import logging.config
 import pickle
 import string
 import yaml
+import json
+import global_parameters as GlobalParamters
+
 
 __author__ = "Johannes Zahn"
 __copyright__ = """
@@ -99,7 +102,7 @@ class FileHandler:
         else:
             self.logging.error('file does not exist: %s',file_path)
 
-    def read_yaml(self, file_path):
+    def read_structured_file(self, file_path):
         """returns the yaml contents
 
         :param file_path: path of the yaml file
@@ -114,9 +117,26 @@ class FileHandler:
             except EnvironmentError as exc:
                 self.logging.error(exc)
                 raise EnvironmentError() from exc
+        if '.json' in file_path:
+            try: 
+                with open(file_path, "r", encoding="utf-8") as fio2:
+                    return json.load(fio2)
+            except EnvironmentError as exc:
+                self.logging.error(exc)
+                raise EnvironmentError() from exc
         else:
             self.logging.error('file is not a .yaml file')
             return None
+        
+    def get_test_files(self):
+        dir = os.path.join(GlobalParamters.ROOT_DIR, GlobalParamters.CONF['test_data_dir'])
+        self.logging.debug(dir)
+        
+        file_paths = os.listdir(dir)
+        file_paths = list(map(lambda x: os.path.join(GlobalParamters.ROOT_DIR,GlobalParamters.CONF['test_data_dir'], x), file_paths))
+        
+        self.logging.debug(file_paths)
+        return file_paths
 
     def remove_file(self, file_path):
         """remove file if exists
@@ -138,5 +158,6 @@ _inst = FileHandler()
 write = _inst.write
 write_pickle = _inst.write_pickle
 load_pickle = _inst.load_pickle
-read_yaml = _inst.read_yaml
+read_structured_file = _inst.read_structured_file
 remove_file = _inst.remove_file
+get_test_files = _inst.get_test_files

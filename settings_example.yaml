@@ -6,7 +6,7 @@ keycloack_realm: /auth/realms/CX-Central/protocol/openid-connect/token # keycloa
 registry_url: https://semantics.int.demo.catena-x.net # URL of registry service
 force_reload: True                     # True force programm to reload twins from registry and not use cache
 semanticIds:                           # list of semanticId's to be checked
-- semanticId: djasdfj
+- semanticId: urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization
   linkedSpecificAssetIds:
     - specificAssetId: manufacturerId
       checkLevel: mandatory 
@@ -24,3 +24,4 @@ proxies:                              # proxy settings for get requests
   https: 
 edc_catalog_check: True               # Should an EDC Catalog check of each participant in the Network be done
 edc_consumer_control_plane:           # EDC consumer control plane url from which the catalog shall be retrieved
+test_data_dir: testdata               # directory where to place all testdata files to check content against

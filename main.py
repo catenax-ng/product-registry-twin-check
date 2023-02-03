@@ -43,8 +43,8 @@ __email__ = ""
 __status__ = "exploration"
 
 # Setting filename must be of format settings_<environment>.yaml
-SETTINGS_FILENAME = 'settings_beta.yaml'
-# SETTINGS_FILENAME = 'settings_int.yaml'
+# SETTINGS_FILENAME = 'settings_beta.yaml'
+SETTINGS_FILENAME = 'settings_int.yaml'
 
 def write_bpn_twin_as_csv(twins, bpn_o):
     """this function writes the result in a human readable result to disk
@@ -89,7 +89,7 @@ def write_edc_check_as_csv(edc_check):
 if __name__ == '__main__':
 
     # setup logging
-    _logging_conf = fH.read_yaml(os.path.join(
+    _logging_conf = fH.read_structured_file(os.path.join(
         GlobalParamters.ROOT_DIR, 'logging.yaml'))
     logging.config.dictConfig(_logging_conf)
     _logging = logging.getLogger(__name__)
@@ -100,15 +100,15 @@ if __name__ == '__main__':
     _logging.info('#'*60)
 
     #Load application configuration
-    conf = fH.read_yaml(os.path.join(
+    conf = fH.read_structured_file(os.path.join(
         GlobalParamters.ROOT_DIR, SETTINGS_FILENAME))
     GlobalParamters.set_conf(conf)
     _logging.info('-' * 60)
     _logging.info('Configuration:')
 
-    for key, value in GlobalParamters.CONF.items():
-        # _logging.info(f'   {key:23} {value}')
-        _logging.info('  %23s %s', key, value)
+    # for key, value in GlobalParamters.CONF.items():
+    #     # _logging.info(f'   {key:23} {value}')
+    #     _logging.info('  %23s %s', key, value)
 
     _logging.info('-' * 60)
 
@@ -148,10 +148,12 @@ if __name__ == '__main__':
 
     
     if 'edc_catalog_check' in GlobalParamters.CONF:
-        GlobalParamters.set_edc_catalog_check(True)
-        
-        if 'edc_consumer_control_plane' not in GlobalParamters.CONF:
-            _logging.error('edc_consumer_control_plane is missing')
+        if GlobalParamters.CONF['edc_catalog_check'] == True:
+            
+            if 'edc_consumer_control_plane' in GlobalParamters.CONF:
+                GlobalParamters.set_edc_catalog_check(True)
+            else:
+                _logging.error('edc_consumer_control_plane is missing')
         
     _logging.info('   edc_catalog_check\t\t\t%s',GlobalParamters.CONF['edc_catalog_check'])
     

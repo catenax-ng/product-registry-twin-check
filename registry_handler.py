@@ -73,12 +73,13 @@ class RegistryHandler:
                     'shell': x,
                     },x))
         return res
-        
-        # globalAssetId": {
-        #         "value": [
-        #             "urn:uuid:0ece43f1-7bd0-11e1-b359-ecad00e4333"
-        #         ]
-        #     },
+    
+    # def _clean_aasId(self, entry):
+    #     #"urn:uuid:[080ecf92-3c3d-4520-bd23-bc20ab980f00, 080ecf92-3c3d-4520-bd23-bc20ab980f00]"
+    #     if ',' in entry: 
+    #         return [entry]
+    #     else:
+    #         return entry
 
     def get_twin(self, aas_id):
         """Retrieves a twin for a specific aasId
@@ -130,13 +131,6 @@ class RegistryHandler:
         if os.path.isfile(pickle_path):
             twins = fH.load_pickle(pickle_path, 'rb')
             self._logging.info(' Twins loaded from file.')
-
-            # len([twin for twin in twins if twin['bpn'] == bpn['value'] ])
-            # if len([twin for twin in twins if twin['bpn'] == bpn['value'] ]) == 0:
-            #     self._logging.info('No values found for %s', bpn['value'] )
-            #     load_twin_list = True
-            # else:
-            #     return [twin for twin in twins if twin['bpn'] == bpn['value'] ]
         else:
             load_twin_list = True
 
@@ -206,7 +200,7 @@ class RegistryHandler:
         # twins = [twin.pop('bpn', None) for twin in twins]
         return twins
 
-    def _getPage(self,page=0,pageSize=20):
+    def _getPage(self,page=0,pageSize=25):
         get_shells = f"/registry/registry/shell-descriptors/?page={page}&pageSize={pageSize}"
         url = urljoin(GlobalParamters.CONF['registry_url'], get_shells)
         self._logging.debug('url: %s', url)
@@ -250,7 +244,7 @@ class RegistryHandler:
                 for i in tqdm(range(1, req['totalPages'])):
                     page = self._getPage(i).json()
                     twins.extend(self._transform_items(page['items']))
-
+                    #TODO: write alle 100 entries to file.
                 fH.write_pickle(pickle_path, twins)
 
             except exceptions.RequestException as exc:
