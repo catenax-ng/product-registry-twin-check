@@ -37,6 +37,10 @@ This repository holds a script to check Digital Twins within the Registry.
 
 ## Getting Started
 
+```python
+pip install pandas requests tdqm PyYAML
+```
+
 1. Add a valid *client_id* and *client_secret* to the configuration file.
 2. Add a list of valid BPN's to the configuration file, if you want to check BPN specific Twins, or let it out to check the whole registry.
 3. Add a list of semanticId's you want to be checked.

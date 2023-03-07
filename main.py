@@ -44,8 +44,8 @@ __email__ = ""
 __status__ = "exploration"
 
 # Setting filename must be of format settings_<environment>.yaml
-# SETTINGS_FILENAME = 'settings_beta.yaml'
-SETTINGS_FILENAME = 'settings_int.yaml'
+SETTINGS_FILENAME = 'settings_beta.yaml'
+# SETTINGS_FILENAME = 'settings_int.yaml'
 
 def write_bpn_twin_as_csv(twins, bpn_o):
     """this function writes the result in a human readable result to disk
@@ -135,12 +135,12 @@ if __name__ == '__main__':
     _logging.info('   use_proxy\t\t\t%s',GlobalParamters.USE_PROXY)
 
     if 'bpn' in GlobalParamters.CONF:
-        if len(GlobalParamters.CONF['bpn']) > 1:
+        if len(GlobalParamters.CONF['bpn']) >= 1:
             GlobalParamters.set_multiple_bpns(True)
         # _logging.info(f'   multiple_bpns\t\t{GlobalParamters.MULTIPLE_BPNS}')
-        _logging.info('   multiple_bpns:')
-        for i in range(0,len(GlobalParamters.CONF['bpn'])):
-            _logging.info(f"\t\t\t\t{GlobalParamters.CONF['bpn'][i]}")
+            _logging.info('   multiple_bpns:')
+            for i in range(0,len(GlobalParamters.CONF['bpn'])):
+                _logging.info(f"\t\t\t\t{GlobalParamters.CONF['bpn'][i]}")
     else:
         _logging.info('   multiple_bpns\t\tall bpns are beeing fetched')
     _logging.info('-' * 60)
@@ -176,7 +176,7 @@ if __name__ == '__main__':
             if file.endswith(".pickle"):
                 pickle_path = os.path.join(GlobalParamters.ROOT_DIR, file)
                 fH.remove_file(pickle_path)
-                
+
     if GlobalParamters.MULTIPLE_BPNS is True:
         for bpn in conf['bpn']:
             shells = rH.get_twins_by_bpn(bpn)
