@@ -108,6 +108,14 @@ cat CX_Testdata_v1.4.1-AsPlanned.json | \
 | **aasId!=globalAssetId** | Checks if globalAssetId and aasId are different values |
 | **valid semanticIds** | Checks if the semanticIds match the list you see above |
 | **valid semanticIds info** | List of semanticIds which do not comply to the list you see above |
+| **submodel id format** | Checks if the submodel ids comply to the Catena-X format ("urn:uuid:" + UUIDv4) |
+| **submodel id format info** | List of submodels which do not comply to the check directly above |
+| **submodel idShort** | Checks if the submodel idShort properties comply to the Traceability conventions |
+| **submodel idShort info** | List of submodels which do not comply to the check directly above |
+| **submodel EDC endpoint** | Checks if the submodel contains a EDC endpoint (with interface == "EDC") |
+| **submodel EDC endpoint info** | List of submodels which do not comply to the check directly above |
+| **submodel EDC endpoint address format** | Checks if the submodel EDC endpoint addresses comply to the Traceability conventions |
+| **submodel EDC endpoint address format** | List of submodels which do not comply to the check directly above |
 | **manufacturerId in specificAssetIds**| checks if manufacturerId key exists in specificAssetId |
 | **manufacturerId in specificAssetIds info**| output of manufacturerId |
 | **bpn** | BPN |

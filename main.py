@@ -154,6 +154,8 @@ if __name__ == '__main__':
                 GlobalParamters.set_edc_catalog_check(True)
             else:
                 _logging.error('edc_consumer_control_plane is missing')
+
+    GlobalParamters.TEST_DATA_CHECK = 'test_data_dir' in GlobalParamters.CONF
         
     _logging.info('   edc_catalog_check\t\t\t%s',GlobalParamters.CONF['edc_catalog_check'])
     
