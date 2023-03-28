@@ -7,3 +7,4 @@ settings_beta.yaml
 *.pyc
 *.xlsx
 
+settings_opco.yaml

@@ -16,6 +16,7 @@ from keycloack_handler_memory import KeycloackHandler
 import re
 from edc_check import EDCCheck
 import copy
+import argparse
 
 __author__ = "Johannes Zahn"
 __copyright__ = """
@@ -98,6 +99,13 @@ if __name__ == '__main__':
     _logging.info('#'*60)
     _logging.info('               START WEB SCRAPER')
     _logging.info('#'*60)
+
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(description='A script to check Digital Twins within the Registry.')
+    parser.add_argument('settingsfilename', help='Configuration file - must be of format settings_<environment>.yaml')
+    args = parser.parse_args()
+
+    SETTINGS_FILENAME = args.settingsfilename
 
     #Load application configuration
     conf = fH.read_structured_file(os.path.join(
